@@ -1,0 +1,41 @@
+{% extends 'mainpage/base.html' %}
+{% load static %}
+
+{% block title %}{{ pet.name }}{% endblock %}
+{% block content %}
+
+<h2>{{ pet.name }}</h2>
+<div class="pet-card">
+  {% if pet.image %}
+    <img src="{{ pet.image.url }}" alt="{{ pet.name }}">
+  {% else %}
+    <img src="{% static 'mainpage/default_pet.jpeg' %}" alt="No image">
+  {% endif %}
+  <p><strong>Species:</strong> {{ pet.species }}</p>
+  <p><strong>Breed:</strong> {{ pet.breed }}</p>
+  <p><strong>Age:</strong> {{ pet.age }}</p>
+  <p><strong>Status:</strong> {{ pet.status }}</p>
+  <p>{{ pet.description }}</p>
+</div>
+
+{% if user.is_authenticated %}
+  <h3>Request Adoption</h3>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Send Request</button>
+  </form>
+{% else %}
+  <p><a href="{% url 'accounts:login' %}">Log in</a> to send a request.</p>
+{% endif %}
+
+{% if user == pet.owner %}
+  <div style="margin:25px">
+    <a class="bt" href="{% url 'mainpage:pet_update' pet.pk %}">Edit</a> |
+    <a class="bt" href="{% url 'mainpage:pet_delete' pet.pk %}">Delete</a>
+  </div>
+{% endif %}
+
+<a class="bt" style="margin:10px" href="{% url 'mainpage:pet_list' %}">← Back to list</a>
+
+{% endblock %}

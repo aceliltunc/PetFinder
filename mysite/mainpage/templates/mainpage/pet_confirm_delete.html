@@ -1,0 +1,14 @@
+{% extends 'mainpage/base.html' %}
+{% block title %}Delete {{ pet.name }}{% endblock %}
+{% block content %}
+
+<h2>Delete Confirmation</h2>
+<p>Are you sure you want to delete <strong>{{ pet.name }}</strong>?</p>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Yes, delete</button>
+  <a href="{% url 'mainpage:pet_detail' pet.pk %}">Cancel</a>
+</form>
+
+{% endblock %}

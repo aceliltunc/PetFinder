@@ -1,0 +1,40 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}PetMatch{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'mainpage/style.css' %}">
+</head>
+<body>
+
+<div class="header">
+    <h1>🐾 PetFinder</h1>
+    {% if user.is_authenticated %}
+        <p>Welcome, {{ user.username }} | <a class="logout" href="{% url 'accounts:logout' %}">Logout</a></p>
+    {% else %}
+        <a style="color:#fff" href="{% url 'accounts:login' %}">Login</a> |
+        <a style="color:#fff" href="{% url 'accounts:register' %}">Register</a>
+    {% endif %}
+</div>
+
+<div class="nav">
+    <a href="{% url 'mainpage:pet_search' %}">Search</a>
+    <a href="{% url 'mainpage:pet_list' %}">Home</a>
+    <a href="{% url 'mainpage:pet_create' %}">Add Pet</a>
+    <a href="{% url 'mainpage:import_pets' %}">Import CSV</a>
+    <a href="{% url 'mainpage:export_pets' %}">Export CSV</a>
+
+</div>
+
+<div class="content">
+    {% block content %}{% endblock %}
+</div>
+
+<div class="footer">
+    <p>&copy; 2025 PetMatch</p>
+</div>
+
+</body>
+</html>

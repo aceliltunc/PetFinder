@@ -1,0 +1,28 @@
+{% extends 'mainpage/base.html' %}
+{% load static %} 
+{% block title %}All Pets{% endblock %}
+{% block content %}
+
+<h2>Available Pets</h2>
+<ol>
+  {% for pet in pets %}
+    <li>
+      <div class="pet-card">
+        <h3>{{ pet.name }} ({{ pet.species }})</h3>
+
+        {% if pet.image %}
+          <img src="{{ pet.image.url }}" alt="{{ pet.name }}">
+        {% else %}
+          <img src="{% static 'mainpage/default_pet.jpeg' %}" alt="No image">
+        {% endif %}
+
+        <p><strong>Age:</strong> {{ pet.age }}</p>
+        <p><a href="{% url 'mainpage:pet_detail' pet.pk %}">View Details</a></p>
+      </div>
+    </li>
+  {% empty %}
+    <li>No pets available right now.</li>
+  {% endfor %}
+</ol>
+
+{% endblock %}

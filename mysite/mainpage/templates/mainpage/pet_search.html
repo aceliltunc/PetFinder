@@ -1,0 +1,43 @@
+{% extends 'mainpage/base.html' %}
+{% load static %}
+{% block title %}Search Pets{% endblock %}
+{% block content %}
+
+<h2>Search for Pets</h2>
+
+<form method="get">
+  <label for="name">Name:</label>
+  <input type="text" name="name" value="{{ name }}">
+
+  <label for="species">Species:</label>
+  <input type="text" name="species" value="{{ species }}">
+
+  <label for="age">Age:</label>
+  <input type="number" name="age" value="{{ age }}">
+
+  <button type="submit">Search</button>
+</form>
+
+<h3>Results:</h3>
+{% if pets %}
+  <ul>
+    {% for pet in pets %}
+      <li>
+        <div class="pet-card">
+          <h4>{{ pet.name }} ({{ pet.species }})</h4>
+          {% if pet.image %}
+            <img src="{{ pet.image.url }}" alt="{{ pet.name }}">
+          {% else %}
+            <img src="{% static 'mainpage/default_pet.jpeg' %}" alt="No image">
+          {% endif %}
+          <p>Age: {{ pet.age }}</p>
+          <a href="{% url 'mainpage:pet_detail' pet.pk %}">View Details</a>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No pets match your criteria.</p>
+{% endif %}
+
+{% endblock %}
