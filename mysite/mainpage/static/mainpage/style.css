@@ -1,8 +1,15 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
 }
 
 .header, .footer {
@@ -16,7 +23,26 @@ body {
     padding: 10px;
     text-align: center;
 }
+/* Footer */
+footer {
+  background-color: #2c3e50;
+  color: white;
+  text-align: center;
+  padding: 20px 0;
+  font-size: 14px;
+}
 
+footer a {
+  color: #f1c40f;
+  margin: 0 10px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+footer a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
 .nav a {
     color: white;
     margin: 0 15px;
@@ -24,6 +50,7 @@ body {
 }
 
 .content {
+    flex: 1;
     padding: 20px;
 }
 
@@ -55,9 +82,8 @@ div.pet-card {
     border: 1px solid #ccc;
     background: white;
     margin: 10px;
-    padding: 10px;
+    padding: 15px;
 }
-
 input, select, textarea {
     display: block;
     margin-bottom: 10px;
@@ -81,13 +107,29 @@ button:hover {
     background-color: #333;
     color: white;
     padding: 8px 12px;
-    margin: 25px 30px;
+    margin: 10px 10px;
     border: none;
     cursor: pointer;
+    text-decoration: none;
+}
+a .bt{
+    text-decoration: none;
 }
 .bt:hover{
     background-color: #555;
+    
 }
+.edit{
+    background-color: green;
+}
+.del{
+    display: inline-block;
+    background-color: #ff1100;
+}
+.del:hover{
+    background-color: rgb(134, 3, 3);
+}
+
 .logout{
     color: #ff1100;
 }

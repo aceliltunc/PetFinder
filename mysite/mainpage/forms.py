@@ -8,9 +8,17 @@ class CSVImportForm(forms.Form):
 class PetForm(forms.ModelForm):
     class Meta:
         model = Pet
-        fields = ['name', 'species', 'breed', 'age', 'gender', 'description', 'image', 'status']
+        fields = [
+            'name', 'species', 'breed', 'age', 'gender',
+            'description', 'last_seen_location', 'last_seen_date',
+            'image', 'status'
+        ]
 
 class AdoptionRequestForm(forms.ModelForm):
     class Meta:
         model = AdoptionRequest
         fields = ['message']
+        labels = {
+            'message': 'Mesaj',
+        }
+

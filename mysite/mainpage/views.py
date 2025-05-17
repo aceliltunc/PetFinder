@@ -25,41 +25,31 @@ def pet_search(request):
         'age': query_age,
     })
 
-# Hayvanları listele
+# Tüm kayıp hayvan ilanlarını listele
 def pet_list(request):
-    pets = Pet.objects.filter(status='Available').order_by('-date_posted')
+    pets = Pet.objects.filter(status='Lost').order_by('-date_reported')
     return render(request, 'mainpage/pet_list.html', {'pets': pets})
 
-# Hayvan detay sayfası + sahiplenme formu
+# Detay sayfası
 def pet_detail(request, pk):
     pet = get_object_or_404(Pet, pk=pk)
-    if request.method == 'POST':
-        form = AdoptionRequestForm(request.POST)
-        if form.is_valid():
-            adoption = form.save(commit=False)
-            adoption.pet = pet
-            adoption.user = request.user
-            adoption.save()
-            return redirect('mainpage:pet_detail', pk=pk)
-    else:
-        form = AdoptionRequestForm()
-    return render(request, 'mainpage/pet_detail.html', {'pet': pet, 'form': form})
+    return render(request, 'mainpage/pet_detail.html', {'pet': pet})
 
-# Yeni hayvan ekle
+# Yeni kayıp bildirimi oluştur
 @login_required
-def pet_create(request):
+def pet_report(request):
     if request.method == 'POST':
         form = PetForm(request.POST, request.FILES)
         if form.is_valid():
             pet = form.save(commit=False)
             pet.owner = request.user
             pet.save()
-            return redirect('mainpage:pet_list')
+            return redirect('mainpage:pet_detail', pk=pet.pk)
     else:
         form = PetForm()
     return render(request, 'mainpage/pet_form.html', {'form': form})
 
-# Hayvan güncelle
+# Güncelleme
 @login_required
 def pet_update(request, pk):
     pet = get_object_or_404(Pet, pk=pk, owner=request.user)
@@ -72,7 +62,7 @@ def pet_update(request, pk):
         form = PetForm(instance=pet)
     return render(request, 'mainpage/pet_form.html', {'form': form})
 
-# Hayvan sil
+# Silme
 @login_required
 def pet_delete(request, pk):
     pet = get_object_or_404(Pet, pk=pk, owner=request.user)

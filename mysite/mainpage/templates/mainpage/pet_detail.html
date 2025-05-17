@@ -5,37 +5,30 @@
 {% block content %}
 
 <h2>{{ pet.name }}</h2>
+
 <div class="pet-card">
   {% if pet.image %}
     <img src="{{ pet.image.url }}" alt="{{ pet.name }}">
   {% else %}
-    <img src="{% static 'mainpage/default_pet.jpeg' %}" alt="No image">
+    <img src="{% static 'mainpage/default_pet.jpeg' %}" alt="Resim yok">
   {% endif %}
-  <p><strong>Species:</strong> {{ pet.species }}</p>
-  <p><strong>Breed:</strong> {{ pet.breed }}</p>
-  <p><strong>Age:</strong> {{ pet.age }}</p>
-  <p><strong>Status:</strong> {{ pet.status }}</p>
-  <p>{{ pet.description }}</p>
+  <p><strong>Tür:</strong> {{ pet.get_species_display }}</p>
+  <p><strong>Irk:</strong> {{ pet.breed }}</p>
+  <p><strong>Cinsiyet:</strong> {{ pet.get_gender_display }}</p>
+  <p><strong>Yaş:</strong> {{ pet.age }}</p>
+  <p><strong>Son görülme:</strong> {{ pet.last_seen_date }} tarihinde <strong>{{ pet.last_seen_location }}</strong>'da</p>
+  <p><strong>Durum:</strong> {{ pet.get_status_display }}</p>
+  <p><strong>Açıklama:</strong> {{ pet.description }}</p>
+  
+  {% if user == pet.owner %}
+  <a class="bt edit" href="{% url 'mainpage:pet_update' pet.pk %}">Düzenle</a> |
+  <a class="bt del" href="{% url 'mainpage:pet_delete' pet.pk %}">Sil</a>
+  {% endif %}
 </div>
 
-{% if user.is_authenticated %}
-  <h3>Request Adoption</h3>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Send Request</button>
-  </form>
-{% else %}
-  <p><a href="{% url 'accounts:login' %}">Log in</a> to send a request.</p>
-{% endif %}
 
-{% if user == pet.owner %}
-  <div style="margin:25px">
-    <a class="bt" href="{% url 'mainpage:pet_update' pet.pk %}">Edit</a> |
-    <a class="bt" href="{% url 'mainpage:pet_delete' pet.pk %}">Delete</a>
-  </div>
-{% endif %}
 
-<a class="bt" style="margin:10px" href="{% url 'mainpage:pet_list' %}">← Back to list</a>
+<a class="bt" href="{% url 'mainpage:pet_list' %}">← Listeye geri dön</a>
+
 
 {% endblock %}

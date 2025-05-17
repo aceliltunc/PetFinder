@@ -12,7 +12,7 @@
 <div class="header">
     <h1>🐾 PetFinder</h1>
     {% if user.is_authenticated %}
-        <p>Welcome, {{ user.username }} | <a class="logout" href="{% url 'accounts:logout' %}">Logout</a></p>
+        <p>Hoşgeldin, {{ user.username }} | <a class="logout" href="{% url 'accounts:logout' %}">Çıkış</a></p>
     {% else %}
         <a style="color:#fff" href="{% url 'accounts:login' %}">Login</a> |
         <a style="color:#fff" href="{% url 'accounts:register' %}">Register</a>
@@ -20,9 +20,9 @@
 </div>
 
 <div class="nav">
-    <a href="{% url 'mainpage:pet_search' %}">Search</a>
-    <a href="{% url 'mainpage:pet_list' %}">Home</a>
-    <a href="{% url 'mainpage:pet_create' %}">Add Pet</a>
+    <a href="{% url 'mainpage:pet_search' %}">Arama</a>
+    <a href="{% url 'mainpage:pet_list' %}">Ana Sayfa</a>
+    <a href="{% url 'mainpage:pet_report' %}">Kayıp Hayvan Bildir</a>
     <a href="{% url 'mainpage:import_pets' %}">Import CSV</a>
     <a href="{% url 'mainpage:export_pets' %}">Export CSV</a>
 
@@ -32,9 +32,16 @@
     {% block content %}{% endblock %}
 </div>
 
-<div class="footer">
-    <p>&copy; 2025 PetMatch</p>
-</div>
+<footer class="footer">
+    <div class="footer-links">
+        <a href="#">Hakkımızda</a>
+        <a href="#">İletişim</a>
+        <a href="#">Gizlilik</a>
+      </div>
+      <div class="copyright">
+        © 2025 PetFinder. Tüm hakları saklıdır.
+      </div>
+</footer>
 
 </body>
 </html>
