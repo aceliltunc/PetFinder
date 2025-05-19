@@ -2,14 +2,15 @@
 {% block title %}{{ form.instance.pk|yesno:"Edit Pet,Add Pet" }}{% endblock %}
 {% block content %}
 
-<h2>{% if form.instance.pk %}Update Pet Info{% else %}Report Lost Pet{% endif %}</h2>
+<h2>{% if form.instance.pk %}Update Pet Info{% else %}Kayıp Hayvanı Bildir{% endif %}</h2>
 
-<form method="pet-card" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">Kaydet</button>
 </form>
 
 <a class="bt del" style="margin-top: 50px;" href="{% url 'mainpage:pet_list' %}">← İptal</a>
+
 
 {% endblock %}

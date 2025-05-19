@@ -1,8 +1,8 @@
 
-<h1>Register</h1>
+<h1>Kayıt</h1>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit">Register</button>
+  <button type="submit">Kayıt ol</button>
 </form>
-<p>Already have an account? <a href="{% url 'accounts:login' %}">Login</a></p>
+<p>Zaten hesabınız var mı? <a href="{% url 'accounts:login' %}">Giriş Yap</a></p>

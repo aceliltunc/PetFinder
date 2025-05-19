@@ -44,6 +44,7 @@ def pet_report(request):
             pet = form.save(commit=False)
             pet.owner = request.user
             pet.save()
+            #form.save_m2m()
             return redirect('mainpage:pet_detail', pk=pet.pk)
     else:
         form = PetForm()
@@ -125,3 +126,8 @@ def export_pets(request):
         ])
 
     return response
+
+# Taglar
+
+
+

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Pet, AdoptionRequest
+from .models import Pet, AdoptionRequest, Tag
 import datetime
 
 @admin.register(Pet)
@@ -13,3 +13,5 @@ class PetAdmin(admin.ModelAdmin):
 class AdoptionRequestAdmin(admin.ModelAdmin):
     list_display = ('pet', 'user', 'request_date')
     search_fields = ('pet__name', 'user__username')
+
+admin.site.register(Tag)

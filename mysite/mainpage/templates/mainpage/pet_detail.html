@@ -20,6 +20,15 @@
   <p><strong>Durum:</strong> {{ pet.get_status_display }}</p>
   <p><strong>Açıklama:</strong> {{ pet.description }}</p>
   
+  <div>
+    <strong>Etiketler:</strong>
+    {% for tag in pet.tags.all %}
+      <span>{{ tag.name }}</span>{% if not forloop.last %}, {% endif %}
+    {% empty %}
+      <span>Etiket yok</span>
+    {% endfor %}
+  </div>
+  
   {% if user == pet.owner %}
   <a class="bt edit" href="{% url 'mainpage:pet_update' pet.pk %}">Düzenle</a> |
   <a class="bt del" href="{% url 'mainpage:pet_delete' pet.pk %}">Sil</a>

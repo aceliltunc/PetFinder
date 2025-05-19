@@ -20,10 +20,15 @@ class Pet(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Lost', verbose_name="Durum")
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     date_reported = models.DateTimeField(auto_now_add=True, verbose_name="Bildirim Tarihi")
+    tags = models.ManyToManyField("Tag", blank=True, verbose_name="Etiketler")
 
     def __str__(self):
         return f"{self.name} - {self.status}"
 
+class Tag(models.Model):  # Many-to-Many Relationship
+  name = models.CharField(max_length=50, unique=True)
+  def __str__(self):
+    return self.name
 
 class SightReport(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE)
@@ -36,8 +41,8 @@ class SightReport(models.Model):
 class AdoptionRequest(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    message = models.TextField()
-    request_date = models.DateTimeField(auto_now_add=True)
+    message = models.TextField(verbose_name="Mesaj")
+    request_date = models.DateTimeField(auto_now_add=True, verbose_name="Talep Tarihi")
 
     def __str__(self):
         return f"Request by {self.user.username} for {self.pet.name}"
