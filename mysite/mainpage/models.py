@@ -30,13 +30,18 @@ class Tag(models.Model):  # Many-to-Many Relationship
   def __str__(self):
     return self.name
 
-class SightReport(models.Model):
-    pet = models.ForeignKey(Pet, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    message = models.TextField()
+class PetSighting(models.Model):
+    pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='sightings')
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     location = models.CharField(max_length=255)
     date_seen = models.DateField()
-    submitted_at = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    contact_method = models.CharField(max_length=255, blank=True)
+    photo = models.ImageField(upload_to='sightings/', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.pet.name} - {self.location} - {self.date_seen}"
 
 class AdoptionRequest(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE)

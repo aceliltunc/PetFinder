@@ -1,0 +1,16 @@
+{% extends 'mainpage/base.html' %}
+{% load static %}
+{% block title %}Search Pets{% endblock %}
+{% block content %}
+
+<h2>{{ pet.name }} için Görülme Bildirimi</h2>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Gönder</button>
+</form>
+
+
+
+{% endblock %}

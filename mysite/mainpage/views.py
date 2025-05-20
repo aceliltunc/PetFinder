@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Pet, AdoptionRequest
-from .forms import PetForm, AdoptionRequestForm
+from .models import Pet, AdoptionRequest, PetSighting
+from .forms import PetForm, AdoptionRequestForm,PetSightingForm
 from django.db.models import Q
 
 def pet_search(request):
@@ -9,7 +9,7 @@ def pet_search(request):
     query_species = request.GET.get('species', '')
     query_age = request.GET.get('age', '')
 
-    pets = Pet.objects.filter(status='Available')
+    pets = Pet.objects.filter(status='Lost')
 
     if query_name:
         pets = pets.filter(name__icontains=query_name)
@@ -31,9 +31,17 @@ def pet_list(request):
     return render(request, 'mainpage/pet_list.html', {'pets': pets})
 
 # Detay sayfası
+@login_required
 def pet_detail(request, pk):
     pet = get_object_or_404(Pet, pk=pk)
-    return render(request, 'mainpage/pet_detail.html', {'pet': pet})
+
+    # Sadece sahibi görsün
+    sightings = pet.sightings.all().order_by('-date_seen') if request.user == pet.owner else None
+
+    return render(request, 'mainpage/pet_detail.html', {
+        'pet': pet,
+        'sightings': sightings,
+    })
 
 # Yeni kayıp bildirimi oluştur
 @login_required
@@ -43,12 +51,13 @@ def pet_report(request):
         if form.is_valid():
             pet = form.save(commit=False)
             pet.owner = request.user
-            pet.save()
-            #form.save_m2m()
+            pet.save()          # Önce kaydet
+            form.save_m2m()     # Sonra ManyToMany ilişkileri kaydet
             return redirect('mainpage:pet_detail', pk=pet.pk)
     else:
         form = PetForm()
     return render(request, 'mainpage/pet_form.html', {'form': form})
+
 
 # Güncelleme
 @login_required
@@ -126,8 +135,25 @@ def export_pets(request):
         ])
 
     return response
+#Kayıp hayvanı gördüm bildirimi
+@login_required
+def report_pet_sighting(request, pet_id):
+    pet = get_object_or_404(Pet, id=pet_id)
 
-# Taglar
+    if request.method == 'POST':
+        form = PetSightingForm(request.POST, request.FILES, pet=pet, reporter=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('mainpage:pet_detail', pk=pet_id)
+        else:
+            print(form.errors)  # Hataları görmek için
+    else:
+        form = PetSightingForm(pet=pet, reporter=request.user)
+
+    return render(request, 'mainpage/report_sighting.html', {'form': form, 'pet': pet})
+
+
+
 
 
 

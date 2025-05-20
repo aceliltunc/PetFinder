@@ -12,32 +12,54 @@
   {% else %}
     <img src="{% static 'mainpage/default_pet.jpeg' %}" alt="Resim yok">
   {% endif %}
+
   <p><strong>Tür:</strong> {{ pet.get_species_display }}</p>
   <p><strong>Irk:</strong> {{ pet.breed }}</p>
   <p><strong>Cinsiyet:</strong> {{ pet.get_gender_display }}</p>
   <p><strong>Yaş:</strong> {{ pet.age }}</p>
-  <p><strong>Son görülme:</strong> {{ pet.last_seen_date }} tarihinde <strong>{{ pet.last_seen_location }}</strong>'da</p>
+  <p><strong>Son görülme:</strong> {{ pet.last_seen_date }} — <strong>{{ pet.last_seen_location }}</strong></p>
   <p><strong>Durum:</strong> {{ pet.get_status_display }}</p>
   <p><strong>Açıklama:</strong> {{ pet.description }}</p>
-  
+
   <div>
     <strong>Etiketler:</strong>
-    {% for tag in pet.tags.all %}
-      <span>{{ tag.name }}</span>{% if not forloop.last %}, {% endif %}
-    {% empty %}
+    {% if pet.tags.exists %}
+      {% for tag in pet.tags.all %}
+        <span>{{ tag.name }}</span>{% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    {% else %}
       <span>Etiket yok</span>
-    {% endfor %}
+    {% endif %}
   </div>
-  
+
   {% if user == pet.owner %}
-  <a class="bt edit" href="{% url 'mainpage:pet_update' pet.pk %}">Düzenle</a> |
-  <a class="bt del" href="{% url 'mainpage:pet_delete' pet.pk %}">Sil</a>
+    <a class="bt edit" href="{% url 'mainpage:pet_update' pet.pk %}">Düzenle</a> |
+    <a class="bt del"  href="{% url 'mainpage:pet_delete' pet.pk %}">Sil</a>
+
+    <div class="sightings">
+      <h3>Görülme Bildirimleri</h3>
+      {% if pet.sightings.exists %}
+        <ul>
+          {% for sighting in pet.sightings.all|dictsortreversed:'date_seen' %}
+            <li>
+              <strong>{{ sighting.user.username|default:"Anonim" }}</strong> —
+              {{ sighting.date_seen|date:"d.m.Y" }}:
+              {{ sighting.location }}<br>
+              <em>{{ sighting.notes }}</em>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>Henüz bir görülme bildirimi yok.</p>
+      {% endif %}
+    </div>
+  {% else %}
+    <a class="bt del" href="{% url 'mainpage:report_pet_sighting' pet.id %}">
+      Bu hayvanı gördüm!
+    </a>
   {% endif %}
 </div>
 
-
-
 <a class="bt" href="{% url 'mainpage:pet_list' %}">← Listeye geri dön</a>
-
 
 {% endblock %}

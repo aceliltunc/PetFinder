@@ -3,35 +3,35 @@
 {% block title %}Search Pets{% endblock %}
 {% block content %}
 
-<h2>Search for Pets</h2>
+<h2>Arama</h2>
 
 <form method="get">
-  <label for="name">Name:</label>
+  <label for="name">İsim:</label>
   <input type="text" name="name" value="{{ name }}">
 
-  <label for="species">Species:</label>
+  <label for="species">Tür:</label>
   <input type="text" name="species" value="{{ species }}">
 
-  <label for="age">Age:</label>
+  <label for="age">Yaş:</label>
   <input type="number" name="age" value="{{ age }}">
 
-  <button type="submit">Search</button>
+  <button type="submit">Ara</button>
 </form>
 
-<h3>Results:</h3>
+<h3>Sonuçlar:</h3>
 {% if pets %}
   <ul>
     {% for pet in pets %}
       <li>
         <div class="pet-card">
-          <h4>{{ pet.name }} ({{ pet.species }})</h4>
+          <h4>{{ pet.name }} ({{ pet.get_species_display }})</h4>
           {% if pet.image %}
             <img src="{{ pet.image.url }}" alt="{{ pet.name }}">
           {% else %}
             <img src="{% static 'mainpage/default_pet.jpeg' %}" alt="No image">
           {% endif %}
-          <p>Age: {{ pet.age }}</p>
-          <a href="{% url 'mainpage:pet_detail' pet.pk %}">View Details</a>
+          <p>Yaş: {{ pet.age }}</p>
+          <a class="bt" href="{% url 'mainpage:pet_detail' pet.pk %}">Detayları Gör</a>
         </div>
       </li>
     {% endfor %}

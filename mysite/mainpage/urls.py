@@ -12,6 +12,7 @@ urlpatterns = [
     path('search/', views.pet_search, name='pet_search'),
     path('import/', views.import_pets, name='import_pets'),
     path('export/', views.export_pets, name='export_pets'),
+    path('pets/<int:pet_id>/report/', views.report_pet_sighting, name='report_pet_sighting'),
 
 
 
