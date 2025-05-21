@@ -46,6 +46,10 @@
               {{ sighting.date_seen|date:"d.m.Y" }}:
               {{ sighting.location }}<br>
               <em>{{ sighting.notes }}</em>
+              {% if sighting.user %}
+                <a class="bt chat" href="{% url 'mainpage:start_chat' sighting.user.id %}">Mesaj Gönder</a>
+              {% endif %}
+
             </li>
           {% endfor %}
         </ul>

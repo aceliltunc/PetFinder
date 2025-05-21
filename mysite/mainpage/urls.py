@@ -13,6 +13,7 @@ urlpatterns = [
     path('import/', views.import_pets, name='import_pets'),
     path('export/', views.export_pets, name='export_pets'),
     path('pets/<int:pet_id>/report/', views.report_pet_sighting, name='report_pet_sighting'),
+    path('chat/<int:user_id>/', views.start_chat, name='start_chat'),
 
 
 

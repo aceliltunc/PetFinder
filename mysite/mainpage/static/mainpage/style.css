@@ -133,3 +133,23 @@ a .bt{
 .logout{
     color: #ff1100;
 }
+
+.message {
+  margin-bottom: 8px;
+  padding: 6px;
+  border-radius: 8px;
+  max-width: 60%;
+}
+.sent {
+  background-color: #d1ffd6;
+  text-align: right;
+  margin-left: auto;
+}
+.received {
+  background-color: #f1f1f1;
+  margin-right: auto;
+}
+.timestamp {
+  font-size: 0.75rem;
+  color: #999;
+}

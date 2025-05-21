@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Pet, AdoptionRequest, Tag, PetSighting
+from .models import Pet, AdoptionRequest, Tag, PetSighting,Message
 import datetime
 
 @admin.register(Pet)
@@ -17,3 +17,5 @@ class AdoptionRequestAdmin(admin.ModelAdmin):
 admin.site.register(Tag)
 
 admin.site.register(PetSighting)
+
+admin.site.register(Message)

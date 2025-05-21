@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Pet, AdoptionRequest, PetSighting
+from django.contrib.auth.models import User
+from .models import Pet, AdoptionRequest, PetSighting, Message
 from .forms import PetForm, AdoptionRequestForm,PetSightingForm
 from django.db.models import Q
 
@@ -153,7 +154,32 @@ def report_pet_sighting(request, pet_id):
     return render(request, 'mainpage/report_sighting.html', {'form': form, 'pet': pet})
 
 
+#hayvanı gören ve sahibi arasında chat bölümü
+@login_required
+def start_chat(request, user_id):
+    receiver = get_object_or_404(User, pk=user_id)
+    room_name = f"chat_{min(request.user.id, receiver.id)}_{max(request.user.id, receiver.id)}"
 
+    if request.method == 'POST':
+        content = request.POST.get('message')
+        if content:
+            Message.objects.create(sender=request.user, receiver=receiver, content=content)
+            return redirect('mainpage:start_chat', user_id=receiver.id)
+
+    messages = Message.objects.filter(
+        sender=request.user, receiver=receiver
+    ) | Message.objects.filter(
+        sender=receiver, receiver=request.user
+    )
+
+    messages = messages.order_by('timestamp')
+
+    room_name = f"chat_{min(request.user.id, receiver.id)}_{max(request.user.id, receiver.id)}"
+    return render(request, 'mainpage/chat.html', {
+        'receiver': receiver,
+        'messages': messages,
+        'room_name': room_name,
+    })
 
 
 
