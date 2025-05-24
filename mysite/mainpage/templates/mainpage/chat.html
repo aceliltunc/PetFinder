@@ -5,55 +5,24 @@
 <h2>{{ receiver.username }} ile Sohbet</h2>
 
 <div id="chat-container">
-  <div id="chat-log" style="height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
-    {% for message in messages %}
-      <div class="message {% if message.sender == request.user %}sent{% else %}received{% endif %}">
-        <strong>{{ message.sender.username }}:</strong> {{ message.content }}
-        <div class="timestamp">{{ message.timestamp|date:"d.m.Y H:i" }}</div>
-      </div>
-    {% endfor %}
-  </div>
+    <div id="chat-log">
+        {% for message in messages %}
+            <div class="message {% if message.sender == request.user %}sent{% else %}received{% endif %}">
+                <strong>{{ message.sender.username }}:</strong> {{ message.content }}
+                <div class="timestamp">{{ message.timestamp|date:"d.m.Y H:i" }}</div>
+            </div>
+        {% endfor %}
+    </div>
 
-  <form id="chat-form" onsubmit="return false;">
-    <input id="chat-message-input" type="text" placeholder="Mesaj yaz..." autocomplete="off" />
-    <button type="submit" id="chat-message-submit">Gönder</button>
-  </form>
+    <form method="post">  {% csrf_token %}
+        <input type="text" name="message" placeholder="Mesaj yaz..." autocomplete="off" />
+        <button class="bt bt-message" type="submit">Gönder</button>
+    </form>
 </div>
 
+<a class="bt red" href="{% url 'mainpage:chat_list'  %}">← Geri Dön</a>
 <script>
-  const userUsername = "{{ request.user.username }}";
-  const chatSocket = new WebSocket(
-    'ws://' + window.location.host +
-    '/ws/chat/{{ room_name }}/'
-  );
-
-  const chatLog = document.querySelector('#chat-log');
-  const input = document.querySelector('#chat-message-input');
-  const form = document.querySelector('#chat-form');
-
-  chatSocket.onmessage = function(e) {
-    const data = JSON.parse(e.data);
-    const div = document.createElement('div');
-    div.classList.add('message');
-    div.classList.add(data.sender === userUsername ? 'sent' : 'received');
-    div.innerHTML = `<strong>${data.sender}:</strong> ${data.message}<div class="timestamp">${data.timestamp}</div>`;
-    chatLog.appendChild(div);
+    const chatLog = document.querySelector('#chat-log');
     chatLog.scrollTop = chatLog.scrollHeight;
-  };
-
-  form.onsubmit = function () {
-    const message = input.value;
-    if (message.trim()) {
-      chatSocket.send(JSON.stringify({ 'message': message }));
-      input.value = '';
-    }
-  };
-  chatSocket.send(JSON.stringify({
-  'message': input.value,
-  'receiver_id': "{{ receiver.id }}"
-}));
 </script>
-
-
-<a href="{% url 'mainpage:pet_detail' receiver.id %}">← Geri Dön</a>
 {% endblock %}

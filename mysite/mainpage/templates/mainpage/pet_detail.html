@@ -33,8 +33,8 @@
   </div>
 
   {% if user == pet.owner %}
-    <a class="bt edit" href="{% url 'mainpage:pet_update' pet.pk %}">Düzenle</a> |
-    <a class="bt del"  href="{% url 'mainpage:pet_delete' pet.pk %}">Sil</a>
+    <a class="bt green" href="{% url 'mainpage:pet_update' pet.pk %}">Düzenle</a> |
+    <a class="bt red"  href="{% url 'mainpage:pet_delete' pet.pk %}">Sil</a>
 
     <div class="sightings">
       <h3>Görülme Bildirimleri</h3>
@@ -47,7 +47,7 @@
               {{ sighting.location }}<br>
               <em>{{ sighting.notes }}</em>
               {% if sighting.user %}
-                <a class="bt chat" href="{% url 'mainpage:start_chat' sighting.user.id %}">Mesaj Gönder</a>
+                <a class="bt bt-message" href="{% url 'mainpage:start_chat' sighting.user.id %}">Mesaj Gönder</a>
               {% endif %}
 
             </li>
@@ -58,7 +58,7 @@
       {% endif %}
     </div>
   {% else %}
-    <a class="bt del" href="{% url 'mainpage:report_pet_sighting' pet.id %}">
+    <a class="bt red" href="{% url 'mainpage:report_pet_sighting' pet.id %}">
       Bu hayvanı gördüm!
     </a>
   {% endif %}

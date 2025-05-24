@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .models import Pet, AdoptionRequest, PetSighting, Message
+from .models import Pet, AdoptionRequest, PetSighting, Message,Tag
 from .forms import PetForm, AdoptionRequestForm,PetSightingForm
-from django.db.models import Q
+from django.db.models import Q,Max
+from django.http import JsonResponse
+from django.utils import timezone
 
 def pet_search(request):
     query_name = request.GET.get('name', '')
@@ -163,23 +165,83 @@ def start_chat(request, user_id):
     if request.method == 'POST':
         content = request.POST.get('message')
         if content:
-            Message.objects.create(sender=request.user, receiver=receiver, content=content)
+            timestamp = timezone.now()  # Zaman damgasını burada oluştur
+            Message.objects.create(sender=request.user, receiver=receiver, content=content, timestamp=timestamp)
             return redirect('mainpage:start_chat', user_id=receiver.id)
 
     messages = Message.objects.filter(
-        sender=request.user, receiver=receiver
-    ) | Message.objects.filter(
-        sender=receiver, receiver=request.user
-    )
+        Q(sender=request.user, receiver=receiver) | Q(sender=receiver, receiver=request.user)
+    ).order_by('timestamp')
 
-    messages = messages.order_by('timestamp')
-
-    room_name = f"chat_{min(request.user.id, receiver.id)}_{max(request.user.id, receiver.id)}"
     return render(request, 'mainpage/chat.html', {
         'receiver': receiver,
         'messages': messages,
         'room_name': room_name,
     })
 
+def get_new_messages(request, user_id):
+    receiver = get_object_or_404(User, pk=user_id)
+    last_timestamp_str = request.GET.get('last_timestamp', None)
+    last_timestamp = None
+    if last_timestamp_str:
+        try:
+            last_timestamp = timezone.datetime.fromisoformat(last_timestamp_str.replace(' ', 'T'))  # ' ' yerine 'T' koy
+        except ValueError:
+            # Eğer hala hata varsa, daha fazla temizlik yapabilirsiniz veya None olarak bırakabilirsiniz
+            last_timestamp = None
+
+    messages = Message.objects.filter(
+        Q(sender=request.user, receiver=receiver) | Q(sender=receiver, receiver=request.user)
+    ).order_by('timestamp')
+
+    if last_timestamp:
+        messages = messages.filter(timestamp__gt=last_timestamp)
+
+    new_messages = [{
+        'sender': msg.sender.username,
+        'content': msg.content,
+        'timestamp': msg.timestamp.isoformat()
+    } for msg in messages]
+    return JsonResponse({'messages': new_messages})
 
 
+#Chat list
+@login_required
+def chat_list(request):
+    # En son mesajlaşan kullanıcıları bul
+    subquery = Message.objects.filter(
+        Q(sender=request.user) | Q(receiver=request.user)
+    ).values('sender', 'receiver').annotate(
+        latest_timestamp=Max('timestamp')
+    ).order_by('-latest_timestamp')
+
+    user_ids = set()
+    for item in subquery:
+        user_ids.add(item['sender'])
+        user_ids.add(item['receiver'])
+    user_ids.discard(request.user.id)  # Kendimizi listeden çıkar
+
+    users = User.objects.filter(id__in=user_ids)
+
+    last_messages = {}
+    for user in users:
+        last_message = Message.objects.filter(
+            Q(sender=request.user, receiver=user) | Q(sender=user, receiver=request.user)
+        ).order_by('-timestamp').first()
+        if last_message:
+            last_messages[user] = last_message
+    print("last_messages:", last_messages)  # Bunu ekleyin!
+    return render(request, 'mainpage/chat_list.html', {'users': users, 'last_messages': last_messages})
+
+#admin paneli
+
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required
+def admin_views(request):
+    return render(request, 'admin/panel.html') # Ana admin paneli sayfası (model listesi)
+
+@staff_member_required
+def admin_pet_list(request):
+    pets = Pet.objects.all()
+    return render(request, 'admin/admin_pet_list.html', {'pets': pets})

@@ -1,0 +1,32 @@
+{% extends 'mainpage/base.html' %}
+{% block title %}Sohbetler{% endblock %}
+
+{% block content %}
+<div class="chat-list-container">
+  <h1>Sohbetler</h1>
+  {% if users %}
+    <ul class="chat-list">
+      {% for user in users %}
+        <li class="chat-list-item">
+          <a href="{% url 'mainpage:start_chat' user.id %}" class="chat-link">
+            <div class="chat-user">
+              {{ user.username }}
+            </div>
+            {% if last_messages %}
+              <div class="chat-last-message">
+                Son Mesaj: 
+                  {% if last_messages.user.id %}
+                      {{ last_messages.user_id }}  {% else %}
+                      (Mesaj Yok)
+                  {% endif %}
+              </div>
+            {% endif %}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Henüz kimseyle sohbet etmediniz.</p>
+  {% endif %}
+</div>
+{% endblock %}

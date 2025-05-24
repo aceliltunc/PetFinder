@@ -44,26 +44,27 @@ footer a:hover {
   text-decoration: underline;
 }
 .nav a {
-    color: white;
-    margin: 0 15px;
-    text-decoration: none;
+  color: white;
+  margin: 0 15px;
+  text-decoration: none;
 }
 
 .content {
-    flex: 1;
-    padding: 20px;
+  flex: 1;
+  padding: 20px;
 }
 
 h1, h2, h3 {
-    color: #222;
+   color: #222;
 }
 
 ul, ol {
-    padding-left: 20px;
+  list-style-type: none;
+  padding-left: 20px;
 }
 
 ul li, ol li {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 form {
@@ -78,11 +79,12 @@ img {
     margin-bottom: 10px;
 }
 
-div.pet-card {
-    border: 1px solid #ccc;
-    background: white;
-    margin: 10px;
-    padding: 15px;
+.pet-card {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
 }
 input, select, textarea {
     display: block;
@@ -111,29 +113,101 @@ button:hover {
     border: none;
     cursor: pointer;
     text-decoration: none;
+    display: inline-block;
+    border-radius: 6px;
 }
 a .bt{
-    text-decoration: none;
+  text-decoration: none;
 }
 .bt:hover{
     background-color: #555;
     
 }
-.edit{
+.green{
     background-color: green;
 }
-.del{
-    display: inline-block;
+.green:hover{
+  background-color: rgb(0, 255, 0);
+}
+.red{
+    
     background-color: #ff1100;
 }
-.del:hover{
+.red:hover{
     background-color: rgb(134, 3, 3);
 }
-
+.bt-message{
+  background-color: #0051ff;
+}
+.bt-message:hover{
+  background-color: #0004ff;
+}
 .logout{
-    color: #ff1100;
+  color: #ff1100;
+}
+.profile{
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+}
+.header-sub{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px;
+  margin: 0 auto; 
+  width: 200px;
+  height: 50px;
+  
+}
+.header-profile-img{
+  width: 50px; 
+  height: 50px; 
+  border: 0px solid white;
+  border-radius: 50%; 
+  cursor: pointer;
+}
+.header-profile-img:hover{
+  width: 50px; 
+  height: 50px; 
+  border: 0.1px solid white;
+  border-radius: 50%; 
+  cursor: pointer;
+}
+.profile-dropdown {
+  position: relative;
+  display: inline-block;
 }
 
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 150px;
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+  z-index: 9999; /* Yüksek yap */
+  right: 0;
+}
+
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #ddd;}
+
+.profile-toggle {
+  cursor: pointer;
+}
+
+.show {
+  display: block;
+}
+
+/*Chat*/
 .message {
   margin-bottom: 8px;
   padding: 6px;
@@ -152,4 +226,120 @@ a .bt{
 .timestamp {
   font-size: 0.75rem;
   color: #999;
+}
+/*Chat-list*/
+.chat-list-container{
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+#chat-log {
+  height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+.chat-list, .pet-list {
+  list-style: none;
+  padding: 0;
+}
+
+.chat-list-item, .pet-list-item {
+  border-bottom: 1px solid #eee;
+}
+
+.chat-list-item:last-child , .pet-list-item:last-child{
+  border-bottom: none;
+}
+
+.chat-link, .pet-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  color: #333;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.chat-link:hover, .pet-link:hover {
+  border-radius: 6px;
+  background-color: #b3b3b3;
+}
+
+.chat-user {
+  font-weight: bold;
+}
+
+.chat-last-message {
+  font-size: 0.8em;
+  color: #888;
+}
+.profile-card {
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ddd;
+  margin-top: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.profile-card h2 {
+  margin-top: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-card label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.profile-card input[type="text"],
+.profile-card input[type="email"],
+.profile-card input[type="file"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* padding'in width'e dahil olmasını sağlar */
+}
+
+.profile-card button[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.profile-card button[type="submit"]:hover {
+  background-color: #45a049;
+}
+
+.profile-card .bt.green {
+  display: block;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.profile-card ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.profile-card ul li {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-card ul li:last-child {
+  border-bottom: none;
 }

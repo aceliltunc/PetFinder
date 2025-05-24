@@ -1,0 +1,15 @@
+{# templates/admin/panel.html #}
+{% extends 'mainpage/base.html' %}
+
+{% block content %}
+    <h1>Admin Yönetim Paneli</h1>
+
+    <div style="margin-bottom: 20px;">
+        <h2>Modeller</h2>
+        <ul>
+            <li><a href="{% url 'admin:admin_pet_list' %}">Evcil Hayvanlar</a></li>
+            
+        </ul>
+    </div>
+
+{% endblock %}

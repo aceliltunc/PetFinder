@@ -14,7 +14,9 @@ urlpatterns = [
     path('export/', views.export_pets, name='export_pets'),
     path('pets/<int:pet_id>/report/', views.report_pet_sighting, name='report_pet_sighting'),
     path('chat/<int:user_id>/', views.start_chat, name='start_chat'),
-
-
-
+    path('chat/<int:user_id>/get_new_messages/', views.get_new_messages, name='get_new_messages'),
+    path('chat/', views.chat_list, name='chat_list'),
+    path('chat/<int:user_id>/', views.start_chat, name='start_chat'),
+    path('admin/', views.admin_views, name='admin_views'),
+    path('admin/pets/', views.admin_pet_list, name='admin_pet_list'),
 ]

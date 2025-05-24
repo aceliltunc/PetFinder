@@ -2,13 +2,13 @@
 {% block title %}Delete {{ pet.name }}{% endblock %}
 {% block content %}
 
-<h2>Delete Confirmation</h2>
-<p>Are you sure you want to delete <strong>{{ pet.name }}</strong>?</p>
+<h2>Silme Onayı</h2>
+<p>"<strong>{{ pet.name }}</strong>" kayıp hayvan bildirisi silinecek, emin misiniz?</p>
 
 <form method="post">
   {% csrf_token %}
-  <button type="submit">Yes, delete</button>
-  <a href="{% url 'mainpage:pet_detail' pet.pk %}">Cancel</a>
+  <button class="bt red" type="submit">Evet, sil</button>
+  <a class="bt" href="{% url 'mainpage:pet_detail' pet.pk %}">İptal</a>
 </form>
 
 {% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'mainpage/base.html' %}
+{% load static %}  
+{% block title %}Profil{% endblock %}
+
+{% block content %}
+    <h1>Profil</h1>
+
+    <div class="profile-card">
+        <h2>Kullanıcı Bilgileri</h2>
+        <p><strong>Kullanıcı Adı:</strong> {{ user.username }}</p>
+        <p><strong>E-posta:</strong> {{ user.email }}</p>
+        <p><strong>Telefon Numarası:</strong> {{ user_profile.contact_number }}</p>
+        {% if user_profile.profile_picture %}
+            <img src="{{ user_profile.profile_picture.url }}" alt="Profil Resmi" style="max-width: 200px; max-height: 200px;">
+            <form method="post" style="border: none;">
+                {% csrf_token %}
+                <button type="submit" name="remove_profile_picture">Profil Resmini Kaldır</button>
+            </form>
+        {% else %}
+            <img src="{% static 'mainpage/default_profile.jpg' %}" alt="Varsayılan Profil Resmi" style="max-width: 200px; max-height: 200px;">
+        {% endif %}
+        <a class="bt green" href="{% url 'accounts:password_change' %}">Şifreni Değiştir</a>
+    </div>
+
+    <div class="profile-card">
+        <h2>Profil Bilgilerini Güncelle</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Kullanıcı Adı:</label>
+                <input type="text" name="username" id="{{ form.username.id_for_label }}" value="{{ user.username }}" maxlength="150">
+                {% if form.errors.username %}
+                    <div class="form-error">
+                        {{ form.errors.username.as_text }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">E-posta:</label>
+                <input type="email" name="email" id="{{ form.email.id_for_label }}" value="{{ user.email }}" maxlength="254">
+                {% if form.errors.email %}
+                    <div class="form-error">
+                        {{ form.errors.email.as_text }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.contact_number.id_for_label }}">Telefon Numarası:</label>
+                <input type="text" name="contact_number" id="{{ form.contact_number.id_for_label }}" value="{{ user_profile.contact_number }}" maxlength="14">
+                {% if form.errors.contact_number %}
+                    <div class="form-error">
+                        {{ form.errors.contact_number.as_text }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.profile_picture.id_for_label }}">Profil Resmi:</label>
+                <input type="file" name="profile_picture" id="{{ form.profile_picture.id_for_label }}">
+                {% if form.errors.profile_picture %}
+                    <div class="form-error">
+                        {{ form.errors.profile_picture.as_text }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit">Profili Güncelle</button>
+        </form>
+    </div>
+
+    <div class="profile-card">
+        <h2>Sahip Olduğunuz Hayvanlar</h2>
+        {% if pets %}
+            <ul class="pet-list">
+                {% for pet in pets %}
+                    <li class="pet-list-item"><a class="pet-link" href="{% url 'mainpage:pet_detail' pet.pk %}">{{ pet.name }} ({{ pet.species }})</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Henüz bir hayvanınız yok.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        const contactNumberInput = document.getElementById('{{ form.contact_number.id_for_label }}');
+
+        contactNumberInput.addEventListener('input', function(event) {
+            let input = event.target.value.replace(/\D/g, '').substring(0, 11); // Sadece rakamlar, max 10 karakter
+            let formattedInput = '';
+
+            if (input.length > 0) formattedInput = '05';
+            if (input.length > 2) formattedInput += input.substring(2, 4);
+            if (input.length > 4) formattedInput += '-' + input.substring(4, 7);
+            if (input.length > 7) formattedInput += '-' + input.substring(7, 11);
+
+            event.target.value = formattedInput;
+        });
+        
+        const usernameInput = document.getElementById('{{ form.username.id_for_label }}');
+        usernameInput.addEventListener('input', function(event) {
+            let input = event.target.value;
+            if (input.length > 150) {
+                event.target.value = input.substring(0, 150);
+            }
+        });
+    </script>
+{% endblock %}

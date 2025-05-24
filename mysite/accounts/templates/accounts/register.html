@@ -1,8 +1,29 @@
+{% extends 'mainpage/base.html' %}
+{% block title %}Kayıt Ol{% endblock %}
 
-<h1>Kayıt</h1>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Kayıt ol</button>
-</form>
-<p>Zaten hesabınız var mı? <a href="{% url 'accounts:login' %}">Giriş Yap</a></p>
+{% block content %}
+  <h1>Kayıt Ol</h1>
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="alert alert-danger">
+            {{ field.errors|join:", " }}
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+    <button type="submit">Kayıt Ol</button>
+  </form>
+  <p>Zaten bir hesabınız var mı? <a href="{% url 'accounts:login' %}">Giriş Yap</a></p>
+{% endblock %}

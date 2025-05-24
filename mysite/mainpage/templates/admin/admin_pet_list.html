@@ -1,0 +1,32 @@
+{# templates/admin/admin_pet_list.html #}
+{% extends 'mainpage/base.html' %}
+
+{% block content %}
+    <h1>Evcil Hayvanlar</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>İsim</th>
+                <th>Tür</th>
+                <th>Durum</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pet in pets %}
+            <tr>
+                <td>{{ pet.name }}</td>
+                <td>{{ pet.species }}</td>
+                <td>{{ pet.status }}</td>
+                <td>
+                    <a href="#">Düzenle</a> | <a href="#">Sil</a>
+                </td>
+            </tr>
+            {% empty %}
+                <tr><td colspan="4">Kayıtlı evcil hayvan yok.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <a href="#">Yeni Ekle</a>
+{% endblock %}
