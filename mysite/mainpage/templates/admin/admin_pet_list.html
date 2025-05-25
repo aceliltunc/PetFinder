@@ -1,9 +1,17 @@
 {# templates/admin/admin_pet_list.html #}
 {% extends 'mainpage/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'mainpage/admin_pet_list.css' %}">
+{% endblock %}
+
+{% block title %}Evcil Hayvan Listesi{% endblock %}
 
 {% block content %}
     <main>
         <section>
+          <div class="admin-pet-list-container">
             <h1>Evcil Hayvanlar</h1>
             <h3>Sistemdeki kayıtlı evcil hayvanların listesi aşağıdadır.</h3>
             <table>
@@ -63,6 +71,7 @@
             </table>
             <div class="actions">
                 <a href="{% url 'mainpage:admin_pet_report' %}">Yeni Ekle</a>
+            </div>
             </div>
         </section>
     </main>

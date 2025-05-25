@@ -1,32 +1,36 @@
 {% extends 'mainpage/base.html' %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'mainpage/chat.css' %}">
+{% endblock %}
 {% block title %}Sohbet{% endblock %}
 
 {% block content %}
-    <h2>{{ receiver.username }} ile Sohbet</h2>
+<a class="bt red" href="{% url 'mainpage:chat_list'  %}">← Geri Dön</a>
+<h2>{{ receiver.username }} ile Sohbet</h2>
 
-    <div id="chat-container">
-        <div id="chat-log">
-            {% for message in messages %}
-                <div class="message {% if message.sender == request.user %}sent{% else %}received{% endif %}"
-                     data-message-id="{{ message.id }}" {% if message.is_read and message.receiver == request.user %}data-is-read="true"{% endif %}>
-                    <strong>{{ message.sender.username }}:</strong> {{ message.content|linebreaks }}
-                    <div class="timestamp" data-timestamp="{{ message.timestamp|date:'c' }}">
-                        {{ message.timestamp|date:"d.m.Y H:i" }}
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
+<div id="chat-container">
+    <div id="chat-log">
+        {% for message in messages %}
+            <div class="message {% if message.sender == request.user %}sent{% else %}received{% endif %}"
+            data-message-id="{{ message.id }}" {% if message.is_read and message.receiver == request.user %}data-is-read="true"{% endif %}>
+                <strong>{{ message.sender.username }}:</strong> {{ message.content|linebreaks }}
+               <div class="timestamp"
+     data-timestamp="{{ message.timestamp|date:'c' }}">
+    {{ message.timestamp|date:"d.m.Y H:i" }}
+</div>
 
-        <form method="post">
-            {% csrf_token %}
-            <input type="text" name="message" placeholder="Mesaj yaz..." autocomplete="off" />
-            <button class="bt bt-message" type="submit">Gönder</button>
-        </form>
+            </div>
+        {% endfor %}
     </div>
 
-    <a class="bt red" href="{% url 'mainpage:chat_list' %}">← Geri Dön</a>
+    <form method="post">  {% csrf_token %}
+        <input type="text" name="message" placeholder="Mesaj yaz..." autocomplete="off" />
+        <button class="bt bt-message" type="submit">Gönder</button>
+    </form>
+</div>
 
-    <script>
+<script>
         const currentUsername = "{{ request.user.username }}";
         const chatLog = document.querySelector('#chat-log');
         chatLog.scrollTop = chatLog.scrollHeight;

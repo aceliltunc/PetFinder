@@ -1,8 +1,16 @@
 {% extends 'mainpage/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'mainpage/admin_pet_list.css' %}">
+{% endblock %}
+
+{% block title %}Etiketler{% endblock %}
 
 {% block content %}
 <main>
     <section>
+        <div class="admin-pet-list-container">
         <h1>Etiketler</h1>
 
         <table id="tagTable">
@@ -29,6 +37,7 @@
 
         <div class="actions">
             <button id="addNewTagBtn" class="bt green edit-tag button add-new">Yeni Etiket Ekle</button>
+        </div>
         </div>
     </section>
 </main>

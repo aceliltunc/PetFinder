@@ -1,0 +1,149 @@
+/* -------- Tema Değişkenleri -------- */
+:root {
+  --clr-bg-page:   #f5f7fa;
+  --clr-bg-card:   #ffffff;
+  --clr-primary:   #3498db;
+  --clr-primary-d: #217dbb;
+  --clr-success:   #2ecc71;
+  --clr-success-d: #27ae60;
+  --clr-danger:    #e74c3c;
+  --clr-danger-d:  #c0392b;
+  --clr-text:      #2c3e50;
+  --clr-muted:     #7f8c8d;
+  --shadow:        0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* -------- Sayfa Ortası Konteyner -------- */
+.form-wrapper {
+  max-width: 600px;
+  margin: 2.5rem auto;
+  padding: 1rem;
+}
+
+/* -------- Başlık -------- */
+.form-wrapper h2, .form-wrapper h1 {
+  text-align: center;
+  color: var(--clr-text);
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+/* -------- Form Kartı -------- */
+.pet-form {
+  background: var(--clr-bg-card);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* form.as_p <p> blokları */
+.pet-form p {
+  margin: 0;
+}
+
+/* Label + Input */
+.pet-form p label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+  color: var(--clr-text);
+}
+.pet-form p input,
+.pet-form p select,
+.pet-form p textarea {
+  width: 100%;
+  padding: 0.4rem;
+  border: 1px solid #d1d8dd;
+  border-radius: 4px;
+  background: #f7f9fa;
+  font-size: 1rem;
+  color: var(--clr-text);
+  transition: border-color 0.2s;
+}
+.pet-form p input:focus,
+.pet-form p select:focus,
+.pet-form p textarea:focus {
+  border-color: var(--clr-primary);
+  outline: none;
+}
+
+/* Açıklama textarea’ları biraz daha geniş */
+.pet-form p textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* -------- Butonlar -------- */
+.submit-btn {
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background: var(--clr-success);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.submit-btn:hover {
+  background: var(--clr-success-d);
+}
+
+/* İptal linkini buton gibi göster */
+.cancel-btn {
+  display: block;
+  text-align: center;
+  margin: 1.5rem auto 0;
+  padding: 0.65rem 1rem;
+  width: 100%;
+  max-width: 200px;
+  background: var(--clr-danger);
+  color: #fff;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.cancel-btn:hover {
+  background: var(--clr-danger-d);
+}
+
+/* label + input/select/textarea */
+.pet-form .form-group label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+  color: var(--clr-text);
+}
+.pet-form .form-group input,
+.pet-form .form-group select,
+.pet-form .form-group textarea {
+  width: 100%;
+  padding: 0.4rem;
+  border: 1px solid #d1d8dd;
+  border-radius: 4px;
+  background: #f7f9fa;
+  font-size: 1rem;
+  color: var(--clr-text);
+  transition: border-color 0.2s;
+}
+.pet-form .form-group input:focus,
+.pet-form .form-group select:focus,
+.pet-form .form-group textarea:focus {
+  border-color: var(--clr-primary);
+  outline: none;
+}
+
+
+/* -------- Responsive -------- */
+@media (max-width: 480px) {
+  .pet-form {
+    padding: 1.5rem 1rem;
+  }
+  .submit-btn, .cancel-btn {
+    font-size: 0.95rem;
+  }
+}

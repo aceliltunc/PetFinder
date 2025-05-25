@@ -6,64 +6,81 @@
     <meta charset="UTF-8">
     <title>{% block title %}PetMatch{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'mainpage/style.css' %}">
+     {% block extra_css %}{% endblock %}
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 
 </head>
 <body>
 
-<div class="header">
-    <h1>🐾 PetFinder</h1>
-    {% if user.is_authenticated %}
-      <div class="header-sub">
-        <p>Hoşgeldin, {{ user.username }}</p>
+<nav class="navbar">
+    <div class="navbar__logo">
+      <a href="{% url 'mainpage:pet_list' %}">
+        <img src="{% static 'mainpage/logo.png' %}" alt="PetFinder Logo">
+      </a>
+    </div>
+
+    <div class="navbar__links">
+      <a href="{% url 'mainpage:pet_list' %}">Ana Sayfa</a>
+      <a href="{% url 'mainpage:pet_report' %}">Kayıp Hayvan Bildir</a>
+      <a href="{% url 'mainpage:chat_list' %}">Sohbet</a>
+      {% if user.is_staff %}
+        <a href="{% url 'mainpage:admin_views' %}">Admin Paneli</a>
+      {% endif %}
+      <a href="{% url 'mainpage:import_pets' %}">Import CSV</a>
+      <a href="{% url 'mainpage:export_pets' %}">Export CSV</a>
+      <a href="{% url 'mainpage:pet_search' %}">Arama</a>
+    </div>
+
+    <div class="navbar__user">
+      {% if user.is_authenticated %}
+        <span class="navbar__greeting">Hoşgeldin, {{ user.username }}</span>
         <div class="profile-dropdown">
           <div class="profile-toggle">
             {% if user_profile.profile_picture %}
-                <img class="header-profile-img" src="{{ user_profile.profile_picture.url }}" alt="Profil Resmi">
+              <img
+                class="navbar__avatar"
+                src="{{ user_profile.profile_picture.url }}"
+                alt="Profil Resmi"
+              >
             {% else %}
-                <img class="header-profile-img" src="{% static 'mainpage/default_profile.jpg' %}" alt="Varsayılan Profil Resmi">
+              <img
+                class="navbar__avatar"
+                src="{% static 'mainpage/default_profile.jpg' %}"
+                alt="Profil Resmi"
+              >
             {% endif %}
           </div>
           <div class="dropdown-content">
             <a href="{% url 'accounts:profile' %}">Profil Ayarları</a>
             <a href="{% url 'accounts:password_change' %}">Şifre Değiştir</a>
-            <a  href="{% url 'accounts:logout' %}">Çıkış Yap</a>
+            <a href="{% url 'accounts:logout' %}">Çıkış Yap</a>
           </div>
         </div>
+      {% else %}
+      <div class="navbar__links">
+        <a href="{% url 'accounts:login' %}">Giriş</a>
+        <a href="{% url 'accounts:register' %}">Kayıt Ol</a>
       </div>
-    {% else %}
-        <a style="color:#fff" href="{% url 'accounts:login' %}">Giriş</a> |
-        <a style="color:#fff" href="{% url 'accounts:register' %}">Kayıl Ol</a>
-    {% endif %}
-</div>
+      {% endif %}
+    </div>
+  </nav>
 
-<div class="nav">
-    <a href="{% url 'mainpage:pet_search' %}">Arama</a>
-    <a href="{% url 'mainpage:pet_list' %}">Ana Sayfa</a>
-    <a href="{% url 'mainpage:pet_report' %}">Kayıp Hayvan Bildir</a>
-    <a href="{% url 'mainpage:chat_list' %}">Sohbet</a>
-    <a href="{% url 'mainpage:import_pets' %}">Import CSV</a>
-    <a href="{% url 'mainpage:export_pets' %}">Export CSV</a>
-    {% if user.is_staff %}
-        <a href="{% url 'mainpage:admin_views' %}">Admin Paneli</a>
-    {% endif %}
-</div>
-
-<div class="content">
+   <div class="content">
     {% block content %}{% endblock %}
-</div>
+  </div>
 
-<footer class="footer">
+  <footer class="footer">
     <div class="footer-links">
-        <a href="#">Hakkımızda</a>
-        <a href="#">İletişim</a>
-        <a href="#">Gizlilik</a>
-      </div>
-      <div class="copyright">
-        © 2025 PetFinder. Tüm hakları saklıdır.
-      </div>
-</footer>
+      <a href="#">Hakkımızda</a>
+      <a href="#">İletişim</a>
+      <a href="#">Gizlilik</a>
+    </div>
+    <div class="copyright">
+      © 2025 PetFinder. Tüm hakları saklıdır.
+    </div>
+  </footer>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>

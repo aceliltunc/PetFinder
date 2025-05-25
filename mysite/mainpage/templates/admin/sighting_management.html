@@ -1,12 +1,20 @@
 {# templates/admin/sighting_management.html #}
 {% extends 'mainpage/base.html' %}
 
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'mainpage/admin_pet_list.css' %}">
+{% endblock %}
+
+{% block title %}Görülme Yönetimi{% endblock %}
+
 {% block content %}
 
     <h1>Görülme Yönetimi</h1>
-    <div id="sighting-list-section">
+    <div class="admin-pet-list-container">
         <h2>Görülmeler</h2>
-        <table id="sighting-table">
+        <table>
             <thead>
                 <tr>
                     <th>Evcil Hayvan</th>

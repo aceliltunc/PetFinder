@@ -1,0 +1,181 @@
+/* ---------- PROFIL SAYFASI WRAPPER ---------- */
+.profile-page {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* ---------- PROFIL KARTLARI ---------- */
+.profile-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Kart başlıkları */
+.profile-card h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #2c3e50;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+}
+
+/* Bilgi satırları */
+.info-group {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+}
+.info-label {
+  font-weight: 600;
+  color: #444;
+  width: 120px;
+}
+.info-value {
+  color: #333;
+  flex: 1;
+}
+
+/* Avatar & Resim kaldırma */
+.avatar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.avatar {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+}
+.remove-avatar-form {
+  margin: 0;
+}
+.change-pass {
+  margin-top: 0.5rem;
+  align-self: flex-start;
+}
+
+/* ---------- AVATAR BÖLÜMÜ: ORTALA & KOLON DÜZENİ ---------- */
+.profile-page .profile-card:first-child .avatar-wrapper {
+  display: flex;
+  flex-direction: column;   /* yanyana değil, alt alta diz */
+  align-items: center;      /* yatay ortala */
+  gap: 0.75rem;             /* avatar–buton arası boşluk */
+  margin-top: 1rem;
+}
+
+.profile-page .profile-card:first-child .avatar {
+  margin: 0;                /* kenar boşluğu sıfırla */
+  width: 120px;             /* biraz büyütebilirsiniz */
+  height: 120px;
+}
+
+/* Resmi kaldırı butonunu avatar’ın hemen altına taşı */
+.profile-page .profile-card:first-child .remove-avatar-form {
+  margin: 0;                /* blok alt boşluğu kaldır */
+}
+
+/* ---------- ŞİFRE DEĞİŞTİR BUTONU: ALTTA ORTALA ---------- */
+.profile-page .profile-card:first-child .change-pass {
+  margin: 1rem auto 0;      /* üstten boşluk, ortalanmış yan boşluk */
+  align-self: center;       /* esnek kutuda ortala */
+  padding: 0.6rem 1.2rem;
+}
+
+/* Eğer button’un rengi çok koyu veya açıksa, uyarlamak için: */
+.profile-page .profile-card:first-child .change-pass {
+  background: #28a745;      /* yeşil ton */
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.profile-page .profile-card:first-child .change-pass:hover {
+  background: #218838;
+}
+
+/* ---------- UPDATE FORM ---------- */
+.update-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.update-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+.update-form label {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: #444;
+}
+.update-form input[type="text"],
+.update-form input[type="email"],
+.update-form input[type="file"] {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ccd0d5;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+.update-form input:focus {
+  outline: none;
+  border-color: #2a72d4;
+}
+.form-error {
+  color: #842029;
+  background: #fdecea;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+/* ---------- PET LIST ---------- */
+.pet-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.pet-item {
+  background: #f5f5f5;
+  padding: 0.6rem 1rem;
+  border-radius: 4px;
+}
+.pet-link {
+  text-decoration: none;
+  color: #2c3e50;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+.pet-link:hover {
+  background: rgba(46, 134, 193, 0.1);
+}
+
+
+/* ---------- NO PETS ---------- */
+.no-pets {
+  color: #777;
+  font-style: italic;
+}
+
+/* ---------- BUTONLAR (global bt sınıfları yetecek) ---------- */
+/* .bt.green, .bt.red zaten globalda var */
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 600px) {
+  .profile-page {
+    grid-template-columns: 1fr;
+  }
+}

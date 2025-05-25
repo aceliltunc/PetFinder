@@ -1,0 +1,125 @@
+/* ---------- LOGIN SAYFASI KAPSAYICISI ---------- */
+.login-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;   /* dikey ortala */
+  align-items: center;       /* yatay ortala */
+  min-height: calc(100vh - 120px); /* nav+footer yüksekliğine göre ayarla */
+  padding: 2rem 1rem;
+  background: #f0f2f5;
+}
+
+/* ---------- FORM KARTI ---------- */
+.login-page .login-card {
+  background: #fff;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+  padding: 2rem 1.5rem;
+  box-sizing: border-box;
+}
+
+/* Başlık */
+.login-page .login-card h1 {
+  margin: 0 0 1.5rem;
+  text-align: center;
+  color: #333;
+  font-size: 1.75rem;
+}
+
+/* Flash mesajlar */
+.login-page .login-card .messages {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+}
+.login-page .login-card .messages li {
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+.login-page .login-card .messages li.error {
+  background: #fdecea;
+  color: #b71c1c;
+}
+
+/* Form grupları */
+.login-page .login-card .form-group {
+  margin-bottom: 1rem;
+}
+.login-page .login-card .form-group label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+  color: #444;
+}
+.login-page .login-card .form-group input {
+  width: 90%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #ccd0d5;
+  border-radius: 4px;
+  font-size: 1.05rem;
+  transition: border-color 0.2s;
+}
+.login-page .login-card .form-group input:focus {
+  outline: none;
+  border-color: #2a72d4;
+}
+
+/* Hata mesajı (field.errors) */
+.login-page .login-card .alert-danger {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  background: #f8d7da;
+  color: #842029;
+  font-size: 0.85rem;
+  border-radius: 4px;
+}
+
+/* Submit butonu */
+.login-page .login-card button[type="submit"] {
+  width: 100%;
+  padding: 0.75rem;
+  background: #2a72d4;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.login-page .login-card button[type="submit"]:hover {
+  background: #245bb5;
+}
+
+/* Alt linkler */
+.login-page .login-card p {
+  text-align: center;
+  margin: 0.75rem 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+.login-page .login-card p a {
+  color: #2a72d4;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.login-page .login-card p a:hover {
+  color: #1d4f9c;
+}
+
+/* Responsive */
+@media (max-width: 450px) {
+  .login-page {
+    padding: 1.5rem 0.5rem;
+  }
+  .login-page .login-card {
+    padding: 1.5rem 1rem;
+  }
+  .login-page .login-card h1 {
+    font-size: 1.5rem;
+  }
+}

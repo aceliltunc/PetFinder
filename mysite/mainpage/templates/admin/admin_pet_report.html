@@ -1,11 +1,19 @@
 {# templates/admin/admin_pet_report.html #}
 {% extends 'mainpage/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'mainpage/pet_form.css' %}">
+{% endblock %}
+
+{% block title %}Yeni Evcil Hayvan Ekle{% endblock %}
 
 {% block content %}
     <main>
         <section>
+            <div class="form-wrapper">
             <h1>Yeni Evcil Hayvan Ekle</h1>
-            <form method="post" enctype="multipart/form-data">
+            <form class="pet-form" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% for field in form %}
                     <div class="form-group">
@@ -21,6 +29,7 @@
                 <button class="bt green" type="submit">Kaydet</button>
                 <a class="bt red" href="{% url 'mainpage:admin_pet_list' %}" >İptal</a>
             </form>
+            </div>
         </section>
     </main>
 {% endblock %}

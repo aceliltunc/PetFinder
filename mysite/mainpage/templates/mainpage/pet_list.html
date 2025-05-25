@@ -1,10 +1,13 @@
 {% extends 'mainpage/base.html' %}
 {% load static %} 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'mainpage/mainpage.css' %}">
+{% endblock %}
 {% block title %}All Pets{% endblock %}
 {% block content %}
-
+<div class="page-wrapper">
 <h2>Son Bildirilen Kayıp Hayvanlar</h2>
-<ol>
+<ol class="pet-list">
   {% for pet in pets %}
     <li>
       <div class="pet-card">
@@ -14,7 +17,8 @@
         {% else %}
           <img src="{% static 'mainpage/default_pet.jpeg' %}" alt="No image">
         {% endif %}
-        <p><strong>Son görülme:</strong> {{ pet.last_seen_date }} tarihinde <strong>{{ pet.last_seen_location }}</strong>'da</p>
+        <p><strong>Son görülme:</strong> {{ pet.last_seen_date }} tarihinde 
+           <strong>{{ pet.last_seen_location }}</strong>'da</p>
         <a class="bt" href="{% url 'mainpage:pet_detail' pet.pk %}">Detayları Gör</a>
       </div>
     </li>
@@ -22,5 +26,6 @@
     <li>Henüz bildirilen hayvan yok.</li>
   {% endfor %}
 </ol>
+</div>
 
 {% endblock %}

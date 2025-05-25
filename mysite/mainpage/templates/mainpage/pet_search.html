@@ -1,11 +1,14 @@
 {% extends 'mainpage/base.html' %}
 {% load static %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'mainpage/search.css' %}">
+{% endblock %}
 {% block title %}Search Pets{% endblock %}
 {% block content %}
-
+<div class="search-page">
 <h2>Arama</h2>
 
-<form method="get">
+<form class="search-form" method="get">
   <label for="name">İsim:</label>
   <input type="text" name="name" value="{{ name }}">
 
@@ -20,7 +23,7 @@
 
 <h3>Sonuçlar:</h3>
 {% if pets %}
-  <ul>
+  <ul class="search-results">
     {% for pet in pets %}
       <li>
         <div class="pet-card">
@@ -37,7 +40,8 @@
     {% endfor %}
   </ul>
 {% else %}
-  <p>No pets match your criteria.</p>
+  <p class="no-results">No pets match your criteria.</p>
 {% endif %}
+</div>
 
 {% endblock %}

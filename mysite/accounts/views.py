@@ -7,6 +7,8 @@ from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmVie
 from .models import UserProfile
 from django.contrib.auth.decorators import login_required
 from mainpage.models import Pet
+from django.contrib.messages import get_messages
+from django.shortcuts import redirect
 
 def register_view(request):
     if request.method == 'POST':
@@ -38,9 +40,12 @@ def login_view(request):
     return render(request, 'accounts/login.html', {'form': form})
 
 def logout_view(request):
+    storage = get_messages(request)
+    for _ in storage:
+        pass
     logout(request)
     messages.info(request, 'Başarıyla çıkış yaptınız.')
-    return redirect('mainpage:pet_list')
+    return redirect('accounts:login')
 
 class CustomPasswordResetView(PasswordResetView):
     template_name = 'accounts/password_reset.html'

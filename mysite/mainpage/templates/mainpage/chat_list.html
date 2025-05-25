@@ -1,4 +1,8 @@
 {% extends 'mainpage/base.html' %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'mainpage/chat_list.css' %}">
+{% endblock %}
 {% block title %}Sohbetler{% endblock %}
 
 {% block content %}

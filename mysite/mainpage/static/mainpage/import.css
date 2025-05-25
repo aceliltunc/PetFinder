@@ -1,0 +1,108 @@
+/* ---------- IMPORT PAGE WRAPPER ---------- */
+.import-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 120px); /* navbar+footer farkı */
+  padding: 2rem 1rem;
+  background: #f4f6f8;
+}
+
+/* ---------- IMPORT CARD ---------- */
+.import-card {
+  background: #fff;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.07);
+  padding: 2rem 1.5rem;
+  box-sizing: border-box;
+}
+
+/* Başlık */
+.import-card h1 {
+  margin: 0 0 1.5rem;
+  text-align: center;
+  font-size: 1.5rem;
+  color: #2c3e50;
+}
+
+/* form.as_p içindeki <p> düzeni */
+.import-card form p {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  color: #333;
+  font-size: 0.95rem;
+}
+.import-card form p label {
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+.import-card form p input[type="file"] {
+    width: 90%;
+  padding: 0.6rem 1rem;
+  border: 1px solid #ccd0d5;
+  border-radius: 4px;
+  background: #fafafa;
+  transition: border-color 0.2s;
+}
+.import-card form p input[type="file"]:focus {
+  outline: none;
+  border-color: #2a72d4;
+}
+
+/* Submit butonu */
+.import-card form button.bt.green {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.import-card form button.bt.green:hover {
+  background: #218838;
+}
+
+/* Hata/hatalistesi (Django errorlist) */
+.import-card .errorlist {
+  margin: 0 0 1rem;
+  padding: 0.8rem 1rem;
+  background: #fdecea;
+  color: #b71c1c;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  list-style: none;
+}
+/* “Listeye Dön” linki */
+.import-card .back-link {
+  display: inline-block;
+  margin-top: 1.5rem;
+  color: #2c3e50;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.import-card .back-link:hover {
+  color: #1a3a5e;
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .import-page {
+    padding: 1.5rem 0.5rem;
+  }
+  .import-card {
+    padding: 1.5rem 1rem;
+  }
+  .import-card h1 {
+    font-size: 1.3rem;
+  }
+}

@@ -1,0 +1,70 @@
+/* ---------- SAYFA DÜZENİ & STUCK FOOTER ---------- */
+/* body’yi tam yüksekliğe, column flex’e çeviriyoruz */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+}
+
+/* content alanı esnek kalsın, footer’ı aşağı iter */
+.content {
+  flex: 1;
+  padding: 1.5rem;
+}
+
+/* ---------- CHAT LISTE KART DÜZENI ---------- */
+.chat-list-container {
+  max-width: 800px;
+  margin: 0 auto;            /* ortala */
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+/* başlık alt sınır & padding */
+.chat-list-container h2 {
+  margin: 0;
+  padding: 1.5rem;
+  font-size: 1.5rem;
+  border-bottom: 1px solid #eee;
+  color: #2c3e50;
+}
+
+/* listeyi sıfırla */
+.chat-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* her madde bir flex link */
+.chat-list-item {
+  border-bottom: 1px solid #eee;
+}
+.chat-list-item:last-child {
+  border-bottom: none;
+}
+.chat-list-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  text-decoration: none;
+  color: #333;
+  transition: background 0.2s;
+}
+.chat-list-link:hover {
+  background: #f9f9f9;
+}
+
+/* son mesaj meta kısmı */
+.chat-list-link .meta {
+  font-size: 0.85rem;
+  color: #777;
+}

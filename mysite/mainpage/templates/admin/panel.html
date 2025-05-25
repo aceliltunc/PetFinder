@@ -1,12 +1,16 @@
 {% extends 'mainpage/base.html' %}
+{% load static %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'mainpage/admin_panel.css' %}">
+{% endblock %}
 
 {% block content %}
-    <div class="admin-panel-container">
+    <div class="admin-panel">
         <h1 class="admin-panel-title">Admin Yönetim Paneli</h1>
 
         <div class="admin-models-section">
             <h2 class="admin-models-title">Modeller</h2>
-            <ul class="admin-models-list">
+            <ul class="models-list">
                 <li class="admin-model-item"><a class="admin-model-link" href="{% url 'mainpage:admin_pet_list' %}">Evcil Hayvanlar</a></li>
                 <li class="admin-model-item"><a class="admin-model-link" href="{% url 'mainpage:admin_tag_list' %}">Etiketler</a></li>
                 <li class="admin-model-item"><a class="admin-model-link" href="{% url 'mainpage:admin_sighting_management' %}">Görülmeler</a></li>

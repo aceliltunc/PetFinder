@@ -1,41 +1,64 @@
 {% extends 'mainpage/base.html' %}
 {% load static %}
 
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'mainpage/pet_detail.css' %}">
+{% endblock %}
+
 {% block title %}{{ pet.name }}{% endblock %}
 {% block content %}
+  <div class="content-wrapper">
+    <h2>{{ pet.name }}</h2>
 
-<h2>{{ pet.name }}</h2>
+    <div class="detail-container">
+      <!-- Sütun 1: Resim -->
+      <div class="detail-image">
+        {% if pet.image %}
+          <img src="{{ pet.image.url }}" alt="{{ pet.name }}">
+        {% else %}
+          <img src="{% static 'mainpage/default_pet.jpeg' %}" alt="Resim yok">
+        {% endif %}
+      </div>
 
-<div class="pet-card">
-  {% if pet.image %}
-    <img src="{{ pet.image.url }}" alt="{{ pet.name }}">
-  {% else %}
-    <img src="{% static 'mainpage/default_pet.jpeg' %}" alt="Resim yok">
-  {% endif %}
+      <!-- Sütun 2: Bilgiler -->
+      <div class="detail-info">
+        <div class="info-row"><strong>Tür:</strong> <span>{{ pet.get_species_display }}</span></div>
+        <div class="info-row"><strong>Irk:</strong> <span>{{ pet.breed|default:"Yok" }}</span></div>
+        <div class="info-row"><strong>Cinsiyet:</strong> <span>{{ pet.get_gender_display }}</span></div>
+        <div class="info-row"><strong>Yaş:</strong> <span>{{ pet.age }}</span></div>
+        <div class="info-row"><strong>Son görülme:</strong> 
+            <span>{{ pet.last_seen_date }} — {{ pet.last_seen_location }}</span>
+        </div>
+        <div class="info-row"><strong>Durum:</strong> <span>{{ pet.get_status_display }}</span></div>
+        <div class="info-row"><strong>Açıklama:</strong> <span>{{ pet.description|default:"—" }}</span></div>
 
-  <p><strong>Tür:</strong> {{ pet.get_species_display }}</p>
-  <p><strong>Irk:</strong> {{ pet.breed }}</p>
-  <p><strong>Cinsiyet:</strong> {{ pet.get_gender_display }}</p>
-  <p><strong>Yaş:</strong> {{ pet.age }}</p>
-  <p><strong>Son görülme:</strong> {{ pet.last_seen_date }} — <strong>{{ pet.last_seen_location }}</strong></p>
-  <p><strong>Durum:</strong> {{ pet.get_status_display }}</p>
-  <p><strong>Açıklama:</strong> {{ pet.description }}</p>
+        <!-- Etiketler -->
+        <div class="tags">
+          {% if pet.tags.exists %}
+            {% for tag in pet.tags.all %}
+              <span class="tag">{{ tag.name }}</span>
+            {% endfor %}
+          {% else %}
+            <span class="tag empty">Etiket yok</span>
+          {% endif %}
+        </div>
 
-  <div>
-    <strong>Etiketler:</strong>
-    {% if pet.tags.exists %}
-      {% for tag in pet.tags.all %}
-        <span>{{ tag.name }}</span>{% if not forloop.last %}, {% endif %}
-      {% endfor %}
-    {% else %}
-      <span>Etiket yok</span>
-    {% endif %}
-  </div>
+        <!-- Butonlar -->
+        <div class="buttons">
+          {% if user == pet.owner %}
+            <a href="{% url 'mainpage:pet_update' pet.pk %}" class="bt edit">Düzenle</a>
+            <a href="{% url 'mainpage:pet_delete' pet.pk %}" class="bt delete">Sil</a>
+          {% else %}
+            <a href="{% url 'mainpage:report_pet_sighting' pet.id %}" class="bt report">
+              Bu hayvanı gördüm!
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
 
-  {% if user == pet.owner %}
-    <a class="bt green" href="{% url 'mainpage:pet_update' pet.pk %}">Düzenle</a> |
-    <a class="bt red"  href="{% url 'mainpage:pet_delete' pet.pk %}">Sil</a>
-
+    <!-- Görülme Bildirimleri -->
+    {% if user == pet.owner %}
     <div class="sightings">
       <h3>Görülme Bildirimleri</h3>
       {% if pet.sightings.exists %}
@@ -43,13 +66,14 @@
           {% for sighting in pet.sightings.all|dictsortreversed:'date_seen' %}
             <li>
               <strong>{{ sighting.user.username|default:"Anonim" }}</strong> —
-              {{ sighting.date_seen|date:"d.m.Y" }}:
-              {{ sighting.location }}<br>
-              <em>{{ sighting.notes }}</em>
+              {{ sighting.date_seen|date:"d.m.Y" }}<br>
+              <em>{{ sighting.location }}</em><br>
+              <p class="notes">{{ sighting.notes }}</p>
               {% if sighting.user %}
-                <a class="bt bt-message" href="{% url 'mainpage:start_chat' sighting.user.id %}">Mesaj Gönder</a>
+                <a href="{% url 'mainpage:start_chat' sighting.user.id %}" class="bt message">
+                  Mesaj Gönder
+                </a>
               {% endif %}
-
             </li>
           {% endfor %}
         </ul>
@@ -57,13 +81,10 @@
         <p>Henüz bir görülme bildirimi yok.</p>
       {% endif %}
     </div>
-  {% else %}
-    <a class="bt red" href="{% url 'mainpage:report_pet_sighting' pet.id %}">
-      Bu hayvanı gördüm!
-    </a>
-  {% endif %}
-</div>
+    {% endif %}
 
-<a class="bt" href="{% url 'mainpage:pet_list' %}">← Listeye geri dön</a>
-
+    <div class="back-link">
+      <a href="{% url 'mainpage:pet_list' %}" class="bt back">← Listeye geri dön</a>
+    </div>
+  </div>
 {% endblock %}

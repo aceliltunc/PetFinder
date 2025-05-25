@@ -1,18 +1,29 @@
 {% extends 'mainpage/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'mainpage/pet_form.css' %}">
+{% endblock %}
+
 {% block title %}{{ form.instance.pk|yesno:"Edit Pet,Add Pet" }}{% endblock %}
 {% block content %}
 
-<h2>{% if form.instance.pk %}Bilgileri Güncelleme: {% else %}Kayıp Hayvanı Bildir{% endif %}</h2>
+<div class="form-wrapper">
+  <h2>
+    {% if form.instance.pk %}
+      Bilgileri Güncelleme
+    {% else %}
+      Kayıp Hayvanı Bildir
+    {% endif %}
+  </h2>
 
+  <form class="pet-form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="bt green submit-btn" type="submit">Kaydet</button>
+  </form>
 
-<form class="pet-card" method="post" enctype="multipart/form-data">
-{% csrf_token %}
-{{ form.as_p }}
-<button class="bt green" type="submit">Kaydet</button>
-</form>
-
-
-<a class="bt red" style="margin-top: 50px;" href="{% url 'mainpage:pet_list' %}">← İptal</a>
-
+  <a class="bt red cancel-btn" href="{% url 'mainpage:pet_list' %}">← İptal</a>
+</div>
 
 {% endblock %}

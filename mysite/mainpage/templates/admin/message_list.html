@@ -1,9 +1,17 @@
 {# templates/admin/message_list.html #}
 {% extends 'mainpage/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'mainpage/admin_pet_list.css' %}">
+{% endblock %}
+
+{% block title %}Mesaj Yönetimi{% endblock %}
 
 {% block content %}
     <main>
         <section>
+            <div class="admin-pet-list-container">
             <h1>Mesaj Yönetimi</h1>
             <table>
                 <thead>
@@ -37,6 +45,7 @@
             <div class="actions">
                 <a href="{% url 'mainpage:admin_message_add' %}" class="button add-new">Yeni Mesaj Ekle</a>
                 <a href="{% url 'mainpage:admin_message_list_filtered' %}" class="button">Kullanıcı Bazlı Filtrele</a>
+            </div>
             </div>
         </section>
     </main>

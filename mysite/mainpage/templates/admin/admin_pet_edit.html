@@ -1,11 +1,21 @@
 {# templates/admin/admin_pet_edit.html #}
 {% extends 'mainpage/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'mainpage/pet_form.css' %}">
+{% endblock %}
+
+{% block title %}
+    {% if form.instance.pk %}Evcil Hayvanı Düzenle{% else %}Yeni Evcil Hayvan Ekle{% endif %}
+{% endblock %}
 
 {% block content %}
+<div class="form-wrapper">
     <main>
         <section>
-            <h1>Evcil Hayvanı Düzenle</h1>
-            <form method="post" enctype="multipart/form-data">
+            <h2>Evcil Hayvanı Düzenle</h2>
+            <form class="pet-form" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% for field in form %}
                     <div class="form-group">
@@ -23,4 +33,5 @@
             </form>
         </section>
     </main>
+</div>
 {% endblock %}

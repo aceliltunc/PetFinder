@@ -1,11 +1,22 @@
 {% extends 'mainpage/base.html' %}
-{% block title %}Import Pets{% endblock %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'mainpage/import.css' %}">
+{% endblock %}
+
+{% block title %}CSV’den Hayvan İçe Aktar{% endblock %}
+
 {% block content %}
-<h2>Import Pets from CSV</h2>
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Import</button>
-</form>
-<a href="{% url 'mainpage:pet_list' %}">← Back to list</a>
+  <div class="import-page">
+    <div class="import-card">
+      <h1>CSV’den Hayvan İçe Aktar</h1>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="bt green" type="submit">İçe Aktar</button>
+      </form>
+      <a class="back-link" href="{% url 'mainpage:pet_list' %}">← Listeye Dön</a>
+    </div>
+  </div>
 {% endblock %}

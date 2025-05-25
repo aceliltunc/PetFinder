@@ -1,0 +1,139 @@
+/* ---------- GENEL AYARLAR ---------- */
+#chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 160px);   /* header+footer yüksekliklerine göre ayarla */
+  max-width: 800px;
+  margin: 1rem auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+/* ---------- BAŞLIK ---------- */
+#chat-container::before {
+  content: "";
+  display: block;
+  height: 0;
+}
+h2 {
+  text-align: center;
+  margin: 1.5rem 0 0.5rem;
+  color: #2c3e50;
+  font-size: 1.5rem;
+}
+
+/* ---------- CHAT LOG ---------- */
+#chat-log {
+  flex: 1;
+  background: #f1f3f5;
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Scrollbar */
+#chat-log::-webkit-scrollbar {
+  width: 6px;
+}
+#chat-log::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.2);
+  border-radius: 3px;
+}
+
+/* ---------- MESAJ KUTULARI ---------- */
+.message {
+  max-width: 70%;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  position: relative;
+  line-height: 1.4;
+  font-size: 0.95rem;
+  word-break: break-word;
+}
+
+/* Kendi gönderdiğin (sent) */
+.message.sent {
+  align-self: flex-start;
+  background-color: #e9ecef;
+  color: #212529;
+  border-top-left-radius: 0;
+}
+
+/* Karşı taraf (received) */
+.message.received {
+  align-self: flex-end;
+  background-color: #d4edda;
+  color: #155724;
+  border-top-right-radius: 0;
+}
+
+/* Zaman bilgisini küçük ve sola dayalı göstermek için */
+.message .timestamp {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+  color: #6c757d;
+  text-align: right;
+}
+
+/* ---------- GİRİŞ FORMU ---------- */
+#chat-container > form {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid #e2e2e2;
+  background: #fff;
+}
+#chat-container > form input[type="text"] {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 20px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+#chat-container > form input[type="text"]:focus {
+  border-color: #2c3e50;
+}
+#chat-container > form .bt-message {
+  padding: 0 1.5rem;
+  background-color: #007bff;
+  border-radius: 20px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+#chat-container > form .bt-message:hover {
+  background-color: #0069d9;
+}
+
+/* ---------- GERİ DÖN BUTONU ---------- */
+a.bt.red {
+  display: inline-block;
+  margin: 1rem auto;
+  padding: 0.6rem 1.2rem;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 600px) {
+  #chat-container {
+    height: calc(100vh - 140px);
+    margin: 0.5rem;
+  }
+  #chat-log {
+    padding: 0.5rem;
+  }
+  #chat-container > form {
+    padding: 0.5rem;
+  }
+  #chat-container > form input[type="text"] {
+    padding: 0.5rem;
+  }
+  #chat-container > form .bt-message {
+    padding: 0 1rem;
+  }
+}
