@@ -1,0 +1,16 @@
+{# templates/admin/message_confirm_delete.html #}
+{% extends 'mainpage/base.html' %}
+
+{% block content %}
+    <main>
+        <section>
+            <h1>Mesajı Sil</h1>
+            <p>Bu mesajı silmek istediğinize emin misiniz?</p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="bt red">Sil</button>
+                <a href="{% url 'mainpage:admin_message_list' %}" class="bt ">İptal</a>
+            </form>
+        </section>
+    </main>
+{% endblock %}

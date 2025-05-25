@@ -1,11 +1,47 @@
 from django import forms
-from .models import Pet, AdoptionRequest, Tag, PetSighting
+from .models import Pet, AdoptionRequest, Tag, PetSighting,Message
+from django.contrib.auth.models import User
 import datetime
 from django.forms import DateInput
 class CSVImportForm(forms.Form):
     csv_file = forms.FileField()
 
+class AdminPetForm(forms.ModelForm):
+    class Meta:
+        model = Pet
+        fields = '__all__'
+        widgets = {
+            'last_seen_date': forms.DateInput(attrs={'type': 'date', 'format': '%Y-%m-%d'}),
+        }
+class AdminTagForm(forms.ModelForm):
+    class Meta:
+        model = Tag
+        fields = '__all__'
 
+class AdminPetSightingForm(forms.ModelForm):
+    class Meta:
+        model = PetSighting
+        fields = '__all__'
+        widgets = {
+            'date_seen': forms.DateInput(attrs={'type': 'date'}),
+            'created_at': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
+
+class AdminAdoptionRequestForm(forms.ModelForm):
+    class Meta:
+        model = AdoptionRequest
+        fields = '__all__'
+        widgets = {
+            'request_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
+
+class AdminMessageForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = '__all__'
+        widgets = {
+            'timestamp': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
 
 class PetForm(forms.ModelForm):
     tags = forms.ModelMultipleChoiceField(
@@ -115,3 +151,6 @@ class TagForm(forms.ModelForm):
         labels = {
             'name': 'Etiket Adı',
         }
+
+class UserSelectionForm(forms.Form):
+    user = forms.ModelChoiceField(queryset=User.objects.all(), label="Kullanıcı Seçin")

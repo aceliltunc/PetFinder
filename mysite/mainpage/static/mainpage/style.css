@@ -343,3 +343,265 @@ a .bt{
 .profile-card ul li:last-child {
   border-bottom: none;
 }
+
+/*TAblolar*/
+/* Genel Tablo Stilleri */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden; /* Köşeleri yuvarlatmak için */
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background-color: #e0f7fa;
+}
+
+td a.bt {
+    display: inline-block;
+    padding: 8px 12px;
+    margin-right: 5px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.9em;
+}
+
+td a.bt.green {
+    background-color: #4CAF50;
+    color: white;
+}
+
+td a.bt.green:hover {
+    background-color: #45a049;
+}
+
+td a.bt.red {
+    background-color: #f44336;
+    color: white;
+}
+
+td a.bt.red:hover {
+    background-color: #d32f2f;
+}
+
+.actions {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.actions a {
+    display: inline-block;
+    padding: 10px 15px;
+    text-decoration: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 6px;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.actions a:hover {
+    background-color: #0056b3;
+}
+
+.actions a.add-new {
+    background-color: #28a745;
+}
+
+.actions a.add-new:hover {
+    background-color: #1e7e34;
+}
+
+/* Resim Stili (isteğe bağlı) */
+td img {
+    max-width: 50px;
+    max-height: 50px;
+    border-radius: 5px;
+    vertical-align: middle;
+}
+/* Sohbet Container */
+#chat-container {
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 500px; /* Sabit bir yükseklik veya ihtiyacınıza göre ayarlayın */
+}
+
+/* Sohbet Log Alanı */
+#chat-log {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Mesaj Stilleri */
+.message {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    clear: both; /* Kayan elementleri temizler */
+    max-width: 80%;
+}
+
+.sent {
+    background-color: #e1f7d5; /* Açık yeşilimsi */
+    float: right;
+    text-align: right;
+}
+
+.received {
+    background-color: #f0f0f0; /* Açık gri */
+    float: left;
+    text-align: left;
+}
+
+/* Kullanıcı Adı */
+.message strong {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+/* Zaman Damgası */
+.timestamp {
+    color: #999;
+    font-size: 0.8em;
+    margin-top: 5px;
+    text-align: right; /* Gönderilen mesajlarda sağda */
+}
+
+.received .timestamp {
+    text-align: left; /* Alınan mesajlarda solda */
+}
+
+/* Mesaj Yazma Formu */
+#chat-container form {
+    display: flex;
+    gap: 10px;
+}
+
+#chat-container input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1em;
+}
+
+#chat-container button[type="submit"] {
+    padding: 10px 15px;
+    background-color: #007bff; /* WordPress mavi tonları */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+#chat-container button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Geri Dön Linki */
+.bt.red {
+    display: inline-block;
+    padding: 10px 15px;
+    text-decoration: none;
+    background-color: #dc3545; /* WordPress kırmızı tonları */
+    color: white;
+    border-radius: 6px;
+    font-size: 1em;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.bt.red:hover {
+    background-color: #c82333;
+}
+
+/* Admin Panel Container */
+.admin-panel-container {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+/* Admin Panel Başlığı */
+.admin-panel-title {
+    color: #212529;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ced4da;
+}
+
+/* Modeller Bölümü */
+.admin-models-section {
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 15px;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Modeller Başlığı */
+.admin-models-title {
+    color: #495057;
+    margin-top: 0;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ced4da;
+}
+
+/* Modeller Listesi */
+.admin-models-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+/* Model Öğesi */
+.admin-model-item {
+    margin-bottom: 8px;
+}
+
+/* Model Linki */
+.admin-model-link {
+    display: block;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #007bff;
+    background-color: transparent;
+    border: 1px solid #007bff;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.admin-model-link:hover {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}

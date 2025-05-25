@@ -1,0 +1,81 @@
+{# templates/admin/message_list_filtered.html #}
+{% extends 'mainpage/base.html' %}
+
+{% block content %}
+    <main>
+        <section>
+            <h1>Mesaj Yönetimi (Kullanıcı Bazlı)</h1>
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="bt">Filtrele</button>
+            </form>
+
+            {% if selected_user %}
+                <h2>{{ selected_user.username }} Tarafından Gönderilen Mesajlar</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Alıcı</th>
+                            <th>İçerik</th>
+                            <th>Zaman Damgası</th>
+                            <th>Okundu</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for message in sent_messages %}
+                            <tr>
+                                <td>{{ message.receiver.username }}</td>
+                                <td>{{ message.content|truncatechars:50 }}</td>
+                                <td>{{ message.timestamp }}</td>
+                                <td>{{ message.is_read|yesno:"Evet,Hayır" }}</td>
+                                <td>
+                                    <a class="bt green" href="{% url 'mainpage:admin_message_edit' message.pk %}">Düzenle</a>
+                                    <a class="bt red" href="{% url 'mainpage:admin_message_delete' message.pk %}">Sil</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="5">Bu kullanıcı tarafından gönderilen mesaj bulunmuyor.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <h2>{{ selected_user.username }} Tarafından Alınan Mesajlar</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Gönderen</th>
+                            <th>İçerik</th>
+                            <th>Zaman Damgası</th>
+                            <th>Okundu</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for message in received_messages %}
+                            <tr>
+                                <td>{{ message.sender.username }}</td>
+                                <td>{{ message.content|truncatechars:50 }}</td>
+                                <td>{{ message.timestamp }}</td>
+                                <td>{{ message.is_read|yesno:"Evet,Hayır" }}</td>
+                                <td>
+                                    <a class="bt green" href="{% url 'mainpage:admin_message_edit' message.pk %}">Düzenle</a>
+                                    <a class="bt red" href="{% url 'mainpage:admin_message_delete' message.pk %}">Sil</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="5">Bu kullanıcı tarafından alınan mesaj bulunmuyor.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+
+            <div class="actions">
+                <a href="{% url 'mainpage:admin_message_add' %}" class="button add-new">Yeni Mesaj Ekle</a>
+                <a href="{% url 'mainpage:admin_message_list' %}" class="button">Tüm Mesajları Listele</a>
+            </div>
+        </section>
+    </main>
+{% endblock %}

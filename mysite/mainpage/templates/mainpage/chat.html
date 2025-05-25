@@ -2,27 +2,111 @@
 {% block title %}Sohbet{% endblock %}
 
 {% block content %}
-<h2>{{ receiver.username }} ile Sohbet</h2>
+    <h2>{{ receiver.username }} ile Sohbet</h2>
 
-<div id="chat-container">
-    <div id="chat-log">
-        {% for message in messages %}
-            <div class="message {% if message.sender == request.user %}sent{% else %}received{% endif %}">
-                <strong>{{ message.sender.username }}:</strong> {{ message.content }}
-                <div class="timestamp">{{ message.timestamp|date:"d.m.Y H:i" }}</div>
-            </div>
-        {% endfor %}
+    <div id="chat-container">
+        <div id="chat-log">
+            {% for message in messages %}
+                <div class="message {% if message.sender == request.user %}sent{% else %}received{% endif %}"
+                     data-message-id="{{ message.id }}" {% if message.is_read and message.receiver == request.user %}data-is-read="true"{% endif %}>
+                    <strong>{{ message.sender.username }}:</strong> {{ message.content|linebreaks }}
+                    <div class="timestamp" data-timestamp="{{ message.timestamp|date:'c' }}">
+                        {{ message.timestamp|date:"d.m.Y H:i" }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="message" placeholder="Mesaj yaz..." autocomplete="off" />
+            <button class="bt bt-message" type="submit">Gönder</button>
+        </form>
     </div>
 
-    <form method="post">  {% csrf_token %}
-        <input type="text" name="message" placeholder="Mesaj yaz..." autocomplete="off" />
-        <button class="bt bt-message" type="submit">Gönder</button>
-    </form>
-</div>
+    <a class="bt red" href="{% url 'mainpage:chat_list' %}">← Geri Dön</a>
 
-<a class="bt red" href="{% url 'mainpage:chat_list'  %}">← Geri Dön</a>
-<script>
-    const chatLog = document.querySelector('#chat-log');
-    chatLog.scrollTop = chatLog.scrollHeight;
-</script>
+    <script>
+        const currentUsername = "{{ request.user.username }}";
+        const chatLog = document.querySelector('#chat-log');
+        chatLog.scrollTop = chatLog.scrollHeight;
+
+        function markMessageAsRead(messageId) {
+            fetch(`/mainpage/chat/mark_read/${messageId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                },
+                body: JSON.stringify({ 'message_id': messageId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log(`Mesaj ${messageId} okundu olarak işaretlendi.`);
+                } else {
+                    console.error(`Mesaj ${messageId} okundu olarak işaretlenemedi:`, data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Ağ hatası:', error);
+            });
+        }
+
+        function observeUnreadMessages() {
+            const messageElements = document.querySelectorAll('#chat-log .received');
+            messageElements.forEach(messageDiv => {
+                if (messageDiv.dataset.isObserved === "true") return;
+
+                const messageId = messageDiv.dataset.messageId;
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && messageDiv.dataset.isRead !== "true") {
+                            markMessageAsRead(messageId);
+                            messageDiv.dataset.isRead = "true";
+                        }
+                    });
+                });
+
+                observer.observe(messageDiv);
+                messageDiv.dataset.isObserved = "true";
+            });
+        }
+
+        function getNewMessages() {
+            const lastMessage = chatLog.lastElementChild;
+            const timestampElement = lastMessage?.querySelector('.timestamp');
+            const lastTimestamp = timestampElement ? timestampElement.dataset.timestamp : null;
+            const receiverId = "{{ receiver.id }}";
+
+            fetch(`/mainpage/chat/${receiverId}/get_new_messages/?last_timestamp=${lastTimestamp}`)
+                .then(response => response.json())
+                .then(data => {
+                    data.messages.forEach(msg => {
+                        const messageDiv = document.createElement('div');
+                        messageDiv.className = `message ${msg.sender === currentUsername ? 'sent' : 'received'}`;
+                        messageDiv.dataset.messageId = msg.id;
+
+                        const formattedTime = new Date(msg.timestamp).toLocaleString();
+                        messageDiv.innerHTML = `
+                            <strong>${msg.sender}:</strong> ${msg.content|linebreaks}
+                            <div class="timestamp" data-timestamp="${msg.timestamp}">${formattedTime}</div>
+                        `;
+
+                        chatLog.appendChild(messageDiv);
+                        chatLog.scrollTop = chatLog.scrollHeight;
+
+                        if (msg.sender !== currentUsername) {
+                            messageDiv.dataset.isRead = "true";
+                            markMessageAsRead(msg.id);
+                        }
+                    });
+
+                    observeUnreadMessages();
+                });
+        }
+
+        observeUnreadMessages();
+        setInterval(getNewMessages, 3000);
+    </script>
 {% endblock %}

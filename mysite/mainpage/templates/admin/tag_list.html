@@ -1,0 +1,214 @@
+{% extends 'mainpage/base.html' %}
+
+{% block content %}
+<main>
+    <section>
+        <h1>Etiketler</h1>
+
+        <table id="tagTable">
+            <thead>
+                <tr>
+                    <th>Adı</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tag in tags %}
+                    <tr data-tag-id="{{ tag.pk }}">
+                        <td class="tag-name">{{ tag.name }}</td>
+                        <td class="actions-cell">
+                            <a href="#" class="bt green edit-tag">Düzenle</a> |
+                            <a href="#" class="bt red delete-tag" data-url="{% url 'mainpage:admin_tag_delete' tag.pk %}">Sil</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="2">Kayıtlı etiket bulunmuyor.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="actions">
+            <button id="addNewTagBtn" class="bt green edit-tag button add-new">Yeni Etiket Ekle</button>
+        </div>
+    </section>
+</main>
+
+<script>
+    // Satır içi silme onayı ve AJAX ile silme
+    document.querySelectorAll(".delete-tag").forEach(link => {
+        link.addEventListener("click", function (e) {
+            e.preventDefault();
+            const cell = this.closest(".actions-cell");
+            const originalHTML = cell.innerHTML;
+            const deleteURL = this.dataset.url;
+            const row = this.closest("tr");
+
+            cell.innerHTML = `
+                <span>Silinsin mi?</span>
+                <button class="bt red confirm-delete">Evet</button>
+                <button class="bt cancel-delete">Hayır</button>
+            `;
+
+            // Silmeyi onayla
+            cell.querySelector(".confirm-delete").addEventListener("click", async () => {
+                try {
+                    const response = await fetch(deleteURL, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": getCSRFToken(),
+                        }
+                    });
+                    if (response.ok) {
+                        row.remove(); // Satırı kaldır
+                    } else {
+                        alert("Silme işlemi başarısız.");
+                        cell.innerHTML = originalHTML;
+                        rebindAll();
+                    }
+                } catch (error) {
+                    alert("Sunucu ile bağlantı kurulamadı.");
+                    cell.innerHTML = originalHTML;
+                    rebindAll();
+                }
+            });
+
+            // Silme iptal
+            cell.querySelector(".cancel-delete").addEventListener("click", () => {
+                cell.innerHTML = originalHTML;
+                rebindAll();
+            });
+        });
+    });
+
+    // Satır içi düzenleme
+    document.querySelectorAll(".edit-tag").forEach(button => {
+        button.addEventListener("click", function (e) {
+            e.preventDefault();
+            const row = this.closest("tr");
+            const tagId = row.dataset.tagId;
+            const nameCell = row.querySelector(".tag-name");
+            const actionsCell = row.querySelector(".actions-cell");
+            const originalName = nameCell.textContent;
+
+            nameCell.innerHTML = `<input type="text" value="${originalName}" class="edit-input" style="width: 100%;">`;
+            actionsCell.innerHTML = `
+                <button class="bt green save-edit">Kaydet</button>
+                <button class="bt cancel-edit">İptal</button>
+            `;
+
+            actionsCell.querySelector(".save-edit").addEventListener("click", async () => {
+                const newName = row.querySelector(".edit-input").value.trim();
+                if (!newName) return alert("İsim boş olamaz.");
+
+                const response = await fetch(`/mainpage/admin/tags/edit/${tagId}/`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCSRFToken(),
+                    },
+                    body: JSON.stringify({ name: newName })
+                });
+
+                if (response.ok) {
+                    nameCell.textContent = newName;
+                    actionsCell.innerHTML = `
+                        <a href="#" class="bt green edit-tag">Düzenle</a> |
+                        <a href="#" class="bt red delete-tag" data-url="/mainpage/admin/tags/delete/${tagId}/">Sil</a>
+                    `;
+                    rebindAll();
+                } else {
+                    alert("Güncelleme başarısız.");
+                }
+            });
+
+            actionsCell.querySelector(".cancel-edit").addEventListener("click", () => {
+                nameCell.textContent = originalName;
+                actionsCell.innerHTML = `
+                    <a href="#" class="bt green edit-tag">Düzenle</a> |
+                    <a href="#" class="bt red delete-tag" data-url="/mainpage/admin/tags/delete/${tagId}/">Sil</a>
+                `;
+                rebindAll();
+            });
+        });
+    });
+
+    function rebindAll() {
+        document.querySelectorAll(".edit-tag").forEach(btn => btn.addEventListener("click", e => location.reload()));
+        document.querySelectorAll(".delete-tag").forEach(btn => btn.addEventListener("click", e => location.reload()));
+    }
+
+    function getCSRFToken() {
+        const name = "csrftoken";
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith(name + '='))
+            ?.split('=')[1];
+        return cookieValue;
+    }
+
+    // Yeni etiket ekleme
+    const addNewBtn = document.getElementById("addNewTagBtn");
+    addNewBtn.addEventListener("click", () => {
+        // Eğer zaten ekleme satırı açıksa engelle
+        if (document.querySelector("#tagTable tbody tr.add-new-row")) return;
+
+        const tbody = document.querySelector("#tagTable tbody");
+        const newRow = document.createElement("tr");
+        newRow.classList.add("add-new-row");
+        newRow.innerHTML = `
+            <td><input type="text" id="newTagName" placeholder="Etiket adı" style="width: 100%;"></td>
+            <td>
+                <button class="bt green" id="saveNewTag">Kaydet</button>
+                <button class="bt" id="cancelNewTag">İptal</button>
+            </td>
+        `;
+        tbody.appendChild(newRow);
+
+        // Kaydet butonu
+        newRow.querySelector("#saveNewTag").addEventListener("click", async () => {
+            const newNameInput = newRow.querySelector("#newTagName");
+            const newName = newNameInput.value.trim();
+            if (!newName) return alert("Etiket adı boş olamaz.");
+
+            try {
+                const response = await fetch("{% url 'mainpage:admin_tag_add' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCSRFToken(),
+                    },
+                    body: JSON.stringify({ name: newName })
+                });
+
+                if (response.ok) {
+                    // Yeni tag başarılı eklendi, tabloyu yenile veya satıra ekle
+                    const data = await response.json();
+                    // data içinde yeni tag id ve name bekleniyor
+
+                    // Satırı tabloya ekle
+                    const newTagRow = document.createElement("tr");
+                    newTagRow.dataset.tagId = data.id;
+                    newTagRow.innerHTML = `
+                        <td class="tag-name">${data.name}</td>
+                        <td class="actions-cell">
+                            <a href="#" class="bt green edit-tag">Düzenle</a> |
+                            <a href="#" class="bt red delete-tag" data-url="/mainpage/admin/tags/delete/${data.id}/">Sil</a>
+                        </td>
+                    `;
+                    tbody.replaceChild(newTagRow, newRow);
+                    rebindAll();
+                } else {
+                    alert("Yeni etiket eklenemedi.");
+                }
+            } catch (error) {
+                alert("Sunucu ile bağlantı kurulamadı.");
+            }
+        });
+
+        // İptal butonu
+        newRow.querySelector("#cancelNewTag").addEventListener("click", () => {
+            newRow.remove();
+        });
+    });
+</script>
+{% endblock %}

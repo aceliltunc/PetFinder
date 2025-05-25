@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .models import Pet, AdoptionRequest, PetSighting, Message,Tag
-from .forms import PetForm, AdoptionRequestForm,PetSightingForm
+from .models import Pet, AdoptionRequest, PetSighting, Message,Tag, User
+from .forms import PetForm, AdoptionRequestForm,PetSightingForm, AdminPetForm,AdminTagForm, AdminPetSightingForm, AdminAdoptionRequestForm, AdminMessageForm
 from django.db.models import Q,Max
 from django.http import JsonResponse
 from django.utils import timezone
@@ -185,9 +185,8 @@ def get_new_messages(request, user_id):
     last_timestamp = None
     if last_timestamp_str:
         try:
-            last_timestamp = timezone.datetime.fromisoformat(last_timestamp_str.replace(' ', 'T'))  # ' ' yerine 'T' koy
+            last_timestamp = timezone.datetime.fromisoformat(last_timestamp_str.replace(' ', 'T'))
         except ValueError:
-            # Eğer hala hata varsa, daha fazla temizlik yapabilirsiniz veya None olarak bırakabilirsiniz
             last_timestamp = None
 
     messages = Message.objects.filter(
@@ -198,12 +197,27 @@ def get_new_messages(request, user_id):
         messages = messages.filter(timestamp__gt=last_timestamp)
 
     new_messages = [{
+        'id': msg.id,  # Mesaj ID'sini ekledik
         'sender': msg.sender.username,
         'content': msg.content,
         'timestamp': msg.timestamp.isoformat()
     } for msg in messages]
     return JsonResponse({'messages': new_messages})
 
+
+@login_required
+def mark_message_as_read(request, message_id):
+    if request.method == 'POST':
+        try:
+            message = get_object_or_404(Message, id=message_id, receiver=request.user, is_read=False)
+            message.is_read = True
+            message.save()
+            return JsonResponse({'success': True})
+        except Message.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Mesaj bulunamadı veya zaten okundu.'}, status=404)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    return JsonResponse({'success': False, 'error': 'Sadece POST istekleri kabul edilir.'}, status=400)
 
 #Chat list
 @login_required
@@ -242,6 +256,201 @@ def admin_views(request):
     return render(request, 'admin/panel.html') # Ana admin paneli sayfası (model listesi)
 
 @staff_member_required
-def admin_pet_list(request):
+def admin_pet_list_view(request):
     pets = Pet.objects.all()
-    return render(request, 'admin/admin_pet_list.html', {'pets': pets})
+    return render(request, 'admin/admin_pet_list.html',{'pets': pets})
+
+@staff_member_required
+def admin_pet_edit(request, pk):
+    pet = get_object_or_404(Pet, pk=pk)
+    if request.method == 'POST':
+        form = AdminPetForm(request.POST, request.FILES, instance=pet)
+        if form.is_valid():
+            form.save()
+            return redirect('mainpage:admin_pet_list')
+    else:
+        form = AdminPetForm(instance=pet)
+    return render(request, 'admin/admin_pet_edit.html', {'form': form, 'pet': pet})
+
+@staff_member_required
+def admin_pet_delete(request, pk):
+    pet = get_object_or_404(Pet, pk=pk)
+    if request.method == 'POST':
+        pet.delete()
+        return redirect('mainpage:admin_pet_list')
+    return render(request, 'admin/admin_pet_confirm_delete.html', {'pet': pet})
+
+@staff_member_required
+def admin_pet_report(request):
+    if request.method == 'POST':
+        form = AdminPetForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('mainpage:admin_pet_list')
+    else:
+        form = AdminPetForm()
+    return render(request, 'admin/admin_pet_report.html', {'form': form})
+
+# --- Tag Yönetimi ---
+@staff_member_required
+def admin_tag_list(request):
+    tags = Tag.objects.all()
+    return render(request, 'admin/tag_list.html', {'tags': tags})
+
+@staff_member_required
+def admin_tag_add(request):
+    if request.method == 'POST':
+        form = AdminTagForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('mainpage:admin_tag_list')
+    else:
+        form = AdminTagForm()
+    return render(request, 'admin/tag_form.html', {'form': form, 'title': 'Yeni Etiket Ekle'})
+
+import json
+from django.http import JsonResponse, HttpResponseBadRequest
+from django.views.decorators.csrf import csrf_exempt
+
+
+
+@csrf_exempt  
+def admin_tag_edit(request, pk):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            tag = get_object_or_404(Tag, pk=pk)
+            new_name = data.get("name", "").strip()
+            if not new_name:
+                return JsonResponse({"success": False, "error": "İsim boş olamaz."}, status=400)
+            tag.name = new_name
+            tag.save()
+            return JsonResponse({"success": True})
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "error": "JSON decode hatası"}, status=400)
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=400)
+    else:
+        return HttpResponseBadRequest("Yalnızca POST kabul edilir.")
+
+@csrf_exempt
+def admin_tag_delete(request, pk):
+    if request.method == "POST":
+        tag = get_object_or_404(Tag, pk=pk)
+        tag.delete()
+        return JsonResponse({"success": True})
+    return HttpResponseNotAllowed(["POST"])
+@csrf_exempt
+def admin_tag_add(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            name = data.get("name", "").strip()
+            if not name:
+                return HttpResponseBadRequest("Etiket adı boş olamaz.")
+            tag = Tag.objects.create(name=name)
+            return JsonResponse({"id": tag.id, "name": tag.name})
+        except Exception:
+            return HttpResponseBadRequest("Geçersiz veri.")
+    return HttpResponseBadRequest("Sadece POST kabul edilir.")
+# --- PetSighting Yönetimi ---
+from django.views.decorators.http import require_POST
+from django.template.loader import render_to_string
+
+@staff_member_required
+def admin_sighting_management(request):
+    sightings = PetSighting.objects.all()
+    form = AdminPetSightingForm()
+    return render(request, 'admin/sighting_management.html', {'sightings': sightings, 'form': form})
+
+@staff_member_required
+def admin_sighting_edit(request, pk):
+    sighting = get_object_or_404(PetSighting, pk=pk)
+    if request.method == 'POST':
+        form = AdminPetSightingForm(request.POST, request.FILES, instance=sighting)
+        if form.is_valid():
+            form.save()
+            return redirect('mainpage:admin_sighting_management')
+    else:
+        form = AdminPetSightingForm(instance=sighting)
+    return render(request, 'admin/sighting_edit.html', {'form': form, 'sighting': sighting})
+
+@staff_member_required
+def admin_sighting_delete(request, pk):
+    sighting = get_object_or_404(PetSighting, pk=pk)
+    if request.method == 'POST':
+        sighting.delete()
+        return redirect('mainpage:admin_sighting_management')
+    return render(request, 'admin/sighting_confirm_delete.html', {'sighting': sighting})
+
+@staff_member_required
+def admin_sighting_add(request):
+    if request.method == 'POST':
+        form = AdminPetSightingForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('mainpage:admin_sighting_management')  # Veya uygun listeleme sayfasına yönlendirin
+    else:
+        form = AdminPetSightingForm()
+    return render(request, 'admin/sighting_add.html', {'form': form, 'title': 'Yeni Görülme Ekle'})
+# --- Message Yönetimi ---
+@staff_member_required
+def admin_message_list(request):
+    messages = Message.objects.all()
+    return render(request, 'admin/message_list.html', {'messages': messages})
+
+@staff_member_required
+def admin_message_add(request):
+    if request.method == 'POST':
+        form = AdminMessageForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('mainpage:admin_message_list')
+    else:
+        form = AdminMessageForm()
+    return render(request, 'admin/message_form.html', {'form': form, 'title': 'Yeni Mesaj Ekle'})
+
+@staff_member_required
+def admin_message_edit(request, pk):
+    message = get_object_or_404(Message, pk=pk)
+    if request.method == 'POST':
+        form = AdminMessageForm(request.POST, instance=message)
+        if form.is_valid():
+            form.save()
+            return redirect('mainpage:admin_message_list')
+    else:
+        form = AdminMessageForm(instance=message)
+    return render(request, 'admin/message_form.html', {'form': form, 'message': message, 'title': 'Mesajı Düzenle'})
+
+@staff_member_required
+def admin_message_delete(request, pk):
+    message = get_object_or_404(Message, pk=pk)
+    if request.method == 'POST':
+        message.delete()
+        return redirect('mainpage:admin_message_list')
+    return render(request, 'admin/message_confirm_delete.html', {'message': message})
+
+from .forms import UserSelectionForm
+
+@staff_member_required
+def admin_message_list_filtered(request):
+    sent_messages = []
+    received_messages = []
+    selected_user = None
+
+    if request.method == 'POST':
+        form = UserSelectionForm(request.POST)
+        if form.is_valid():
+            selected_user = form.cleaned_data['user']
+            sent_messages = Message.objects.filter(sender=selected_user).order_by('-timestamp')
+            received_messages = Message.objects.filter(receiver=selected_user).order_by('-timestamp')
+    else:
+        form = UserSelectionForm()
+
+    context = {
+        'form': form,
+        'sent_messages': sent_messages,
+        'received_messages': received_messages,
+        'selected_user': selected_user,
+    }
+    return render(request, 'admin/message_list_filtered.html', context)

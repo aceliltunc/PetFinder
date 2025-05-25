@@ -54,11 +54,11 @@ class AdoptionRequest(models.Model):
 
 
 class Message(models.Model):
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
-    content = models.TextField()
-    timestamp = models.DateTimeField()
-    is_read = models.BooleanField(default=False)
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages', verbose_name="Gönderen")
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages', verbose_name="Alıcı")
+    content = models.TextField(verbose_name="Mesaj")
+    timestamp = models.DateTimeField(verbose_name="Zaman Damgası")
+    is_read = models.BooleanField(default=False, verbose_name="Okundu")
 
     def __str__(self):
         return f"{self.sender} -> {self.receiver}: {self.content}"

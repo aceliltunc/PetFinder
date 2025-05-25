@@ -1,0 +1,16 @@
+{# templates/admin/admin_pet_confirm_delete.html #}
+{% extends 'mainpage/base.html' %}
+
+{% block content %}
+    <main>
+        <section>
+            <h1>Evcil Hayvanı Sil</h1>
+            <p><strong>{{ pet.name }}</strong> adlı evcil hayvanı silmek istediğinize emin misiniz?</p>
+            <form method="post">
+                {% csrf_token %}
+                <button class="bt red" style="width:100px;" type="submit" class="button delete">Sil</button>
+                <a class="bt" href="{% url 'mainpage:admin_pet_list' %}" class="button cancel">İptal</a>
+            </form>
+        </section>
+    </main>
+{% endblock %}

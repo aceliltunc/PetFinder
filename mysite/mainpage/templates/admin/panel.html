@@ -1,15 +1,17 @@
-{# templates/admin/panel.html #}
 {% extends 'mainpage/base.html' %}
 
 {% block content %}
-    <h1>Admin Yönetim Paneli</h1>
+    <div class="admin-panel-container">
+        <h1 class="admin-panel-title">Admin Yönetim Paneli</h1>
 
-    <div style="margin-bottom: 20px;">
-        <h2>Modeller</h2>
-        <ul>
-            <li><a href="{% url 'admin:admin_pet_list' %}">Evcil Hayvanlar</a></li>
-            
-        </ul>
+        <div class="admin-models-section">
+            <h2 class="admin-models-title">Modeller</h2>
+            <ul class="admin-models-list">
+                <li class="admin-model-item"><a class="admin-model-link" href="{% url 'mainpage:admin_pet_list' %}">Evcil Hayvanlar</a></li>
+                <li class="admin-model-item"><a class="admin-model-link" href="{% url 'mainpage:admin_tag_list' %}">Etiketler</a></li>
+                <li class="admin-model-item"><a class="admin-model-link" href="{% url 'mainpage:admin_sighting_management' %}">Görülmeler</a></li>
+                <li class="admin-model-item"><a class="admin-model-link" href="{% url 'mainpage:admin_message_list' %}">Mesajlar</a></li>
+            </ul>
+        </div>
     </div>
-
 {% endblock %}

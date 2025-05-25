@@ -1,0 +1,26 @@
+{# templates/admin/sighting_add.html #}
+{% extends 'mainpage/base.html' %}
+
+{% block content %}
+    <main>
+        <section>
+            <h1>Yeni Görülme Ekle</h1>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        {{ field.label_tag }} {{ field }}
+                        {% if field.errors %}
+                            <div class="error">{{ field.errors }}</div>
+                        {% endif %}
+                        {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="bt green">Kaydet</button>
+                <a href="{% url 'mainpage:admin_sighting_management' %}" class="bt red">İptal</a>
+            </form>
+        </section>
+    </main>
+{% endblock %}

@@ -1,0 +1,26 @@
+{# templates/admin/admin_pet_report.html #}
+{% extends 'mainpage/base.html' %}
+
+{% block content %}
+    <main>
+        <section>
+            <h1>Yeni Evcil Hayvan Ekle</h1>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        {{ field.label_tag }} {{ field }}
+                        {% if field.errors %}
+                            <div class="error">{{ field.errors }}</div>
+                        {% endif %}
+                        {% if field.help_text %}
+                            <small>{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button class="bt green" type="submit">Kaydet</button>
+                <a class="bt red" href="{% url 'mainpage:admin_pet_list' %}" >İptal</a>
+            </form>
+        </section>
+    </main>
+{% endblock %}
