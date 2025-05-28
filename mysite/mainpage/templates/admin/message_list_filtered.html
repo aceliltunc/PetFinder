@@ -1,17 +1,24 @@
 {# templates/admin/message_list_filtered.html #}
 {% extends 'mainpage/base.html' %}
+{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'mainpage/pet_form.css' %}">
+    <link rel="stylesheet" href="{% static 'mainpage/admin_pet_list.css' %}">
+{% endblock %}
+
 
 {% block content %}
+ <div class="form-wrapper">
     <main>
         <section>
             <h1>Mesaj Yönetimi (Kullanıcı Bazlı)</h1>
 
-            <form method="post">
+            <form class="pet-form" method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <button type="submit" class="bt">Filtrele</button>
             </form>
-
+            <div class="admin-pet-list-container">
             {% if selected_user %}
                 <h2>{{ selected_user.username }} Tarafından Gönderilen Mesajlar</h2>
                 <table>
@@ -76,6 +83,8 @@
                 <a href="{% url 'mainpage:admin_message_add' %}" class="button add-new">Yeni Mesaj Ekle</a>
                 <a href="{% url 'mainpage:admin_message_list' %}" class="button">Tüm Mesajları Listele</a>
             </div>
+            </div>
         </section>
     </main>
+    </div>
 {% endblock %}

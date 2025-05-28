@@ -1,16 +1,26 @@
 {% extends 'mainpage/base.html' %}
 {% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'mainpage/pet_form.css' %}">
+{% endblock %}
+
 {% block title %}Search Pets{% endblock %}
 {% block content %}
 
+<a class="bt del" href="{% url 'mainpage:pet_detail' pet.id %}">← Geri Dön</a>
+
+<div class="form-wrapper">
+
 <h2>{{ pet.name }} için Görülme Bildirimi</h2>
 
-<form method="post">
+<form class="pet-form" method="post">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">Gönder</button>
 </form>
 
-<a class="bt del" href="{% url 'mainpage:pet_detail' pet.id %}">← Geri Dön</a>
+
+</div>
 
 {% endblock %}

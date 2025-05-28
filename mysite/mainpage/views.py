@@ -6,6 +6,17 @@ from .forms import PetForm, AdoptionRequestForm,PetSightingForm, AdminPetForm,Ad
 from django.db.models import Q,Max
 from django.http import JsonResponse
 from django.utils import timezone
+from django.utils.encoding import smart_str
+from datetime import datetime
+import csv
+from io import TextIOWrapper
+from .forms import CSVImportForm
+from django.http import HttpResponse
+from django.contrib.admin.views.decorators import staff_member_required
+# --- PetSighting Yönetimi ---
+from django.views.decorators.http import require_POST
+from django.template.loader import render_to_string
+import datetime
 
 def pet_search(request):
     query_name = request.GET.get('name', '')
@@ -84,57 +95,79 @@ def pet_delete(request, pk):
         return redirect('mainpage:pet_list')
     return render(request, 'mainpage/pet_confirm_delete.html', {'pet': pet})
 
-import csv
-from io import TextIOWrapper
-from .forms import CSVImportForm
-
 @login_required
 def import_pets(request):
     if request.method == 'POST':
         form = CSVImportForm(request.POST, request.FILES)
         if form.is_valid():
-            csv_file = TextIOWrapper(request.FILES['csv_file'].file, encoding='windows-1254')
-            reader = csv.DictReader(csv_file)
-
+            csv_file = TextIOWrapper(request.FILES['csv_file'].file, encoding='utf-8-sig')
+            reader   = csv.DictReader(csv_file)
             for row in reader:
-                Pet.objects.create(
+                # Tarihi parse edelim:
+                last_seen_date = None
+                if row.get('last_seen_date'):
+                    # Eğer import datetime yaptıysanız:
+                    last_seen_date = datetime.datetime.strptime(
+                        row['last_seen_date'], '%Y-%m-%d'
+                    ).date()
+                    # Eğer from datetime import datetime kullandıysanız, yukarıdaki satır:
+                    # last_seen_date = datetime.strptime(...)
+                # Pet objesini oluştur
+                pet = Pet.objects.create(
                     name=row['name'],
                     species=row['species'],
                     breed=row['breed'],
-                    age=int(row['age']),
+                    age=int(row['age']) if row['age'] else None,
                     gender=row['gender'],
-                    description=row['description'],
+                    description=row.get('description', ''),
                     status=row['status'],
                     owner=request.user,
-                    # image alanı göz ardı ediliyor
+                    last_seen_location=row.get('last_seen_location', ''),
+                    last_seen_date=last_seen_date,
                 )
+                # Etiketleri de set edelim…
+                tags_str  = row.get('tags', '')
+                tag_names = [t.strip() for t in tags_str.split(',') if t.strip()]
+                tag_objs  = []
+                for name in tag_names:
+                    tag_obj, _ = Tag.objects.get_or_create(name=name)
+                    tag_objs.append(tag_obj)
+                pet.tags.set(tag_objs)
+
             return redirect('mainpage:pet_list')
     else:
         form = CSVImportForm()
+
     return render(request, 'mainpage/import_pets.html', {'form': form})
-
-
-from django.http import HttpResponse
 
 @login_required
 def export_pets(request):
     pets = Pet.objects.filter(owner=request.user)
 
+    username = request.user.username
+    filename = f"{username}_pets.csv"
+
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="my_pets.csv"'
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    response.write('\ufeff')
 
     writer = csv.writer(response)
-    writer.writerow(['name', 'species', 'breed', 'age', 'gender', 'description', 'status'])
+    writer.writerow(['id','name', 'species', 'breed', 'age', 'gender', 'description', 'last_seen_date', 'last_seen_location', 'status', 'tags'])
 
     for pet in pets:
         writer.writerow([
+            pet.id,  # ID ekleniyor
             pet.name,
             pet.species,
             pet.breed,
             pet.age,
             pet.gender,
-            pet.description,
-            pet.status,
+            smart_str(pet.description),
+            pet.last_seen_date.strftime('%Y-%m-%d') if pet.last_seen_date else '',
+            pet.last_seen_location,
+            smart_str(pet.status),
+            pet.tags,
         ])
 
     return response
@@ -249,8 +282,6 @@ def chat_list(request):
 
 #admin paneli
 
-from django.contrib.admin.views.decorators import staff_member_required
-
 @staff_member_required
 def admin_views(request):
     return render(request, 'admin/panel.html') # Ana admin paneli sayfası (model listesi)
@@ -353,9 +384,7 @@ def admin_tag_add(request):
         except Exception:
             return HttpResponseBadRequest("Geçersiz veri.")
     return HttpResponseBadRequest("Sadece POST kabul edilir.")
-# --- PetSighting Yönetimi ---
-from django.views.decorators.http import require_POST
-from django.template.loader import render_to_string
+
 
 @staff_member_required
 def admin_sighting_management(request):

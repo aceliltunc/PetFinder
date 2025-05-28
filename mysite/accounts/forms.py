@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordResetForm, SetPasswordForm
 from .models import UserProfile
 import re
+
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)
 
@@ -10,14 +11,14 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
         widgets = {
-            'password': forms.PasswordInput(),
+            'password1': forms.PasswordInput(),
             'password2': forms.PasswordInput(),
         }
 
     def clean_password2(self):
-        password = self.cleaned_data.get('password')
+        password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
-        if password and password != password2:
+        if password1 and password1 != password2:
             raise forms.ValidationError("Şifreler eşleşmiyor.")
         return password2
 
@@ -56,6 +57,8 @@ class UserProfileForm(forms.ModelForm):
     
     def clean_email(self):
         email = self.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Bu e-posta adresi zaten kayıtlı.")
         if not email:
             return email
         if '@' not in email:

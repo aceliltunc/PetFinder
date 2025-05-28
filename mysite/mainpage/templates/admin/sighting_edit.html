@@ -1,11 +1,18 @@
 {# templates/admin/sighting_edit.html #}
 {% extends 'mainpage/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'mainpage/pet_form.css' %}">
+{% endblock %}
+
 
 {% block content %}
+<div class="form-wrapper"
     <main>
         <section>
             <h1>Görülmeyi Düzenle</h1>
-            <form method="post" enctype="multipart/form-data">
+            <form class="pet-form" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% for field in form %}
                     <div class="form-group">
@@ -23,4 +30,5 @@
             </form>
         </section>
     </main>
+</div>
 {% endblock %}

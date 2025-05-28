@@ -3,8 +3,12 @@ from .models import Pet, AdoptionRequest, Tag, PetSighting,Message
 from django.contrib.auth.models import User
 import datetime
 from django.forms import DateInput
+
 class CSVImportForm(forms.Form):
-    csv_file = forms.FileField()
+    csv_file = forms.FileField(
+        label="CSV Dosyası",
+        help_text="CSV dosyasını yükleyin. Dosya UTF-8 kodlamalı olmalıdır.",
+    )
 
 class AdminPetForm(forms.ModelForm):
     class Meta:
@@ -22,6 +26,16 @@ class AdminPetSightingForm(forms.ModelForm):
     class Meta:
         model = PetSighting
         fields = '__all__'
+        labels = {
+            'pet': 'Evcil Hayvan',
+            'user': 'Kullanıcı',
+            'location': 'Konum',
+            'date_seen': 'Görülme Tarihi',
+            'notes': 'Notlar',
+            'contact_method': 'İletişim Yöntemi',
+            'photo': 'Fotoğraf',
+            'created_at': 'Oluşturma Zamanı',
+        }
         widgets = {
             'date_seen': forms.DateInput(attrs={'type': 'date'}),
             'created_at': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
@@ -104,6 +118,13 @@ class PetSightingForm(forms.ModelForm):
     class Meta:
         model = PetSighting
         fields = ['location', 'date_seen', 'notes', 'contact_method', 'photo']
+        labels = {
+            'location': 'Konum',
+            'date_seen': 'Görülme Tarihi',
+            'notes': 'Notlar',
+            'contact_method': 'İletişim Yöntemi',
+            'photo': 'Fotoğraf',
+        }   # <- BURADAKİ fazladan virgülü SİLİN
         widgets = {
             'date_seen': DateInput(
                 attrs={'type': 'date'},  

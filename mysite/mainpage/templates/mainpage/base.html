@@ -27,8 +27,8 @@
       {% if user.is_staff %}
         <a href="{% url 'mainpage:admin_views' %}">Admin Paneli</a>
       {% endif %}
-      <a href="{% url 'mainpage:import_pets' %}">Import CSV</a>
-      <a href="{% url 'mainpage:export_pets' %}">Export CSV</a>
+      <a href="{% url 'mainpage:import_pets' %}">Hayvan Aktar</a>
+      <a href="{% url 'mainpage:export_pets' %}">Hayvanlarımı Dışarı Aktar</a>
       <a href="{% url 'mainpage:pet_search' %}">Arama</a>
     </div>
 
@@ -72,9 +72,6 @@
 
   <footer class="footer">
     <div class="footer-links">
-      <a href="#">Hakkımızda</a>
-      <a href="#">İletişim</a>
-      <a href="#">Gizlilik</a>
     </div>
     <div class="copyright">
       © 2025 PetFinder. Tüm hakları saklıdır.

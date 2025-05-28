@@ -1,11 +1,18 @@
 {# templates/admin/message_form.html #}
 {% extends 'mainpage/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'mainpage/pet_form.css' %}">
+{% endblock %}
+
 
 {% block content %}
+<div class="form-wrapper">
     <main>
         <section>
             <h1>{{ title }}</h1>
-            <form method="post">
+            <form class="pet-form" method="post">
                 {% csrf_token %}
                 {% for field in form %}
                     <div class="form-group">
@@ -19,8 +26,9 @@
                     </div>
                 {% endfor %}
                 <button type="submit" class="bt green">Kaydet</button>
-                <a href="{% url 'mainpage:admin_message_list' %}" class="bt red">İptal</a>
+                <a href="{% url 'mainpage:admin_message_list' %}" class="bt red text-center">İptal</a>
             </form>
         </section>
     </main>
+</div>
 {% endblock %}
